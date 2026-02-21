@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { PROJECTS } from "../constants";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
@@ -8,6 +9,18 @@ const Projects = () => {
   const techProjects = PROJECTS.filter(
     (project) => project.category === "Tech"
   );
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  const disableReveal = prefersReducedMotion || isMobile;
 
   return (
     <section className="space-y-10">
@@ -24,9 +37,10 @@ const Projects = () => {
         {techProjects.map((project, index) => (
           <motion.div
             key={project.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={disableReveal ? false : { opacity: 0, y: 20 }}
+            animate={disableReveal ? { opacity: 1, y: 0 } : undefined}
+            whileInView={disableReveal ? undefined : { opacity: 1, y: 0 }}
+            viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Card className="group space-y-6">
