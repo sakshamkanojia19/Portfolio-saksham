@@ -38,7 +38,7 @@ const Hero = () => {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="max-w-xl text-base text-white/70"
         >
-          I build AI-driven products and automation systems with LLMs, RAG pipelines, and scalable backend services that deliver measurable impact.
+          I build AI-driven products and automation systems with LLMs, RAG pipelines, and scalable Saas Products & workflows that deliver measurable impact.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
