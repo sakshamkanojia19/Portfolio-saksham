@@ -1,6 +1,6 @@
 import project1 from "../assets/projects/imag2.jpg";
 
-export const HERO_CONTENT = `I build AI-driven full-stack products with React.js, FastAPI, and Node.js. I integrate LLMs (OpenAI, Claude) using LangChain RAG pipelines and vector databases, and deliver scalable backend systems with MongoDB and PostgreSQL. I focus on clean system design, testing, CI/CD, and cloud delivery on GCP.`;
+export const HERO_CONTENT = `I build AI-driven full-stack products with React.js, FastAPI, and Node.js. I integrate LLMs (OpenAI, Claude) using LangChain RAG pipelines and vector databases, and deliver scalable SaaS systems & Workflows. I focus on clean system design, testing, CI/CD, and cloud delivery on GCP.`;
 
 export const EXPERIENCES = [
   {
