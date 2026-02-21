@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   return (
     <section className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-      <div className="space-y-6">
+      <div className="space-y-6 text-center lg:text-left">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
-          className="flex flex-wrap gap-3"
+          className="flex flex-wrap justify-center gap-3 lg:justify-start"
         >
           <Button
             asChild
@@ -64,7 +64,7 @@ const Hero = () => {
             <Link to="/contact">Hire Me</Link>
           </Button>
         </motion.div>
-        <div className="flex items-center gap-4 text-xl text-white/70">
+        <div className="flex items-center justify-center gap-4 text-xl text-white/70 lg:justify-start">
           <a
             href="https://www.linkedin.com/in/saksham-kanojia-7895b7217/"
             target="_blank"
