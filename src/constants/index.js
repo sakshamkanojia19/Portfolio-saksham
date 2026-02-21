@@ -1,181 +1,219 @@
-import project1 from "../assets/projects/Project1.png";
+import project1 from "../assets/projects/imag2.jpg";
 
+export const HERO_CONTENT = `I build AI-driven full-stack products with React.js, FastAPI, and Node.js. I integrate LLMs (OpenAI, Claude) using LangChain RAG pipelines and vector databases, and deliver scalable backend systems with MongoDB and PostgreSQL. I focus on clean system design, testing, CI/CD, and cloud delivery on GCP.`;
 
-
-export const HERO_CONTENT = ` 
-I specialize in building scalable full-stack applications using React.js, Next.js, Node.js, and MongoDB, with a strong grasp of modern UI libraries like Tailwind CSS and ShadCN. Skilled in AI automation with ChatGPT, Gemini, and Python, I develop intelligent, workflow-optimizing solutions. I ensure quality with automated testing using Selenium, Postman, and Jest, and bring additional expertise in cloud computing, cybersecurity, and blockchain. Passionate about solving real-world problems through technology, I deliver secure, high-impact digital experiences.
-`   
 export const EXPERIENCES = [
   {
-    year: "Jan 2025 - Present",
-    role: "   Business AI Automation Trainee",
-    company: "Digital Web Solutions ",
-    description: `Engineered AI-powered Automations and RPA solutions using ChatGPT, Gemini, and RAG models, Agentic AI automating workflows and 
-reducing manual effort by 60%.     
-• Co-develop and integrate LLM-powered Cognitive AI chatbots with dev team using Open AI, React, Node.js, Express, PostgreSQL & 
-MongoDB, leveraging GenAI API and prompt engineering to deliver 3x more results, context-aware user interactions.    
-• Automated complex business processes using Python, Zapier, Make, and polyglot programming—delivering scalable systems like 
-cognitive AI chatbot, competitor analysis tool and hiring workflows.`,
-    technologies: ["MongoDB","PostgreSQL","Node.js","Express.js","AI","Automation","Zapier","Make","RPA","LLM","Gemini","ChatGPT","Prompt Engineering","RAG","Open AI","GenAI"],
+    year: "Apr 2025 - Present",
+    role: "AI Automation Engineer",
+    company: "Digital Web Solutions",
+    description:
+      "Designed, built, and deployed production-grade AI automation systems and internal AI SaaS platforms, reducing manual operational effort by 60%. Engineered LLM-powered chatbots using LangChain RAG pipelines with Pinecone vector search, integrating FastAPI and Node.js services for context-aware, multi-turn interactions. Architected internal business platforms (task management, expense management, hiring pipelines, competitor analysis, AI cold outreach, employee fitment) using Python, FastAPI, React, and AI workflow orchestration.",
+    technologies: [
+      "Python",
+      "FastAPI",
+      "AI Automation",
+      "n8n",
+      "React.js",
+      "Node.js",
+      "LangChain",
+      "Pinecone",
+      "RAG",
+      "LLM",
+      "OpenAI",
+      "Claude",
+      "MongoDB",
+      "Docker",
+      "GCP",
+      "CI/CD",
+    ],
+  },
+  {
+    year: "Apr 2025 - Sep 2025",
+    role: "Business AI Automation Trainee",
+    company: "Digital Web Solutions",
+    description:
+      "Engineered AI-powered automations and RPA solutions using ChatGPT, Gemini, and RAG models, reducing manual effort by 60%. Co-developed LLM-powered cognitive AI chatbots with OpenAI, React, Node.js, Express, PostgreSQL, and MongoDB, using prompt engineering for context-aware interactions. Automated complex business processes using Python, Zapier, and Make, delivering systems like competitor analysis tools and hiring workflows.",
+    technologies: [
+      "MongoDB",
+      "PostgreSQL",
+      "Node.js",
+      "Express.js",
+      "AI",
+      "Automation",
+      "Zapier",
+      "Make",
+      "RPA",
+      "LLM",
+      "Gemini",
+      "ChatGPT",
+      "Prompt Engineering",
+      "RAG",
+      "OpenAI",
+    ],
   },
   {
     year: "Jan 2025 - Mar 2025",
-    role: "Full Stack Developer Intern",
+    role: "Full Stack Development Intern",
     company: "Unified Mentor",
-    description: `Deployed full-stack apps via CI/CD using React.js, Redux, FastAPI, Node.js, AWS(EC2), Docker, MongoDB & Socket.io, WebSocket, 
-Figma, Agile & System Design boosting efficiency & user experience by 35%.   
-• Participated in code reviews, maintained API and code documentation, wrote clean & efficient code increase in 60% project success rate. 
-• Conducted unit testing and functional testing using selenium & Jest for web applications, reducing bugs by 40%.         
-• Implemented API testing on RESTful APIs via Postman, ensuring backend accuracy by 30%. `,
-    technologies: ["MERN","React","MongoDB","Node.js","Express.js","FastAPI","AWS","Docker","Agile","SDLC","Socket.io","websocket","recharts"],
+    description:
+      "Built and deployed full-stack web applications using React.js, FastAPI, Node.js, MongoDB, Docker, and CI/CD pipelines on AWS (EC2), improving deployment efficiency and user experience by 35%. Contributed to code reviews, API development, and technical documentation, improving project delivery success by 60%. Implemented unit, functional, and REST API testing with Selenium, Jest, and Postman, reducing production bugs by 40% and improving backend reliability.",
+    technologies: [
+      "React.js",
+      "FastAPI",
+      "Node.js",
+      "MongoDB",
+      "Docker",
+      "AWS EC2",
+      "CI/CD",
+      "Selenium",
+      "Jest",
+      "Postman",
+    ],
   },
   {
     year: "Dec 2024 - Jan 2025",
     role: "Web Developer Intern",
     company: "Oasis Infobyte",
-    description: ` Built MERN stack projects following SDLC, increasing efficiency by 35%.
- Optimized CI/CD workflows, reducing project deployment time by 20%.`,
-    technologies: ["MERN","React","JavaScript","Restful API","MongoDB","Node.js","Express.js","Tailwind Css","CI/CD"],
-  },{
+    description:
+      "Built MERN stack projects following SDLC, improving development efficiency by 35%. Optimized CI/CD workflows, reducing deployment time by 20%.",
+    technologies: [
+      "MERN",
+      "React",
+      "JavaScript",
+      "REST APIs",
+      "MongoDB",
+      "Node.js",
+      "Express.js",
+      "Tailwind CSS",
+      "CI/CD",
+    ],
+  },
+  {
     year: "Jan 2024 - Feb 2024",
-    role: "Generative AI & Data Science Trainee",
+    role: "Data Science & Generative AI Intern",
     company: "IBM SkillBuild",
-    description: `Explored Generative AI with a focus on prompt engineering and advanced techniques. Developed insightful data visualizations using Data Science principles and tools like R and RStudio, enhancing analytical capabilities.`,
-    technologies: ["R", "RStudio", "Data Science", "Generative AI"],
+    description:
+      "Created interactive data visualizations using R and RStudio, improving data interpretation by 40%. Explored Generative AI concepts and tools to enhance AI-driven workflows. Crafted effective prompts for LLMs like ChatGPT, boosting response accuracy and relevance.",
+    technologies: ["R", "RStudio", "Generative AI", "Prompt Engineering"],
   },
   {
     year: "Sep 2023 - Nov 2023",
     role: "Cybersecurity & Ethical Hacking Intern",
     company: "Rinex.ai",
-    description: `Executed key cybersecurity tasks such as data gathering, vulnerability analysis, and network sniffing. Performed penetration testing using tools like NMAP, Wireshark, Zap, and Metasploit, ensuring secure coding standards. Conducted detailed vulnerability assessments and generated actionable reports using Zap.`,
-    technologies: ["NMAP", "Wireshark", "Burp Suite", "Zap", "Metasploit"],
+    description:
+      "Performed cybersecurity tasks including data gathering, vulnerability analysis, and network sniffing. Conducted penetration testing using Nmap, Wireshark, OWASP ZAP, and Metasploit, and produced actionable vulnerability reports.",
+    technologies: ["Nmap", "Wireshark", "OWASP ZAP", "Metasploit"],
   },
   {
     year: "2023 - 2024",
     role: "Major Project Lead (Decentralized Cryptocurrency Exchange DApp)",
     company: "College Final Year Project",
-    description: `Led the development of a decentralized cryptocurrency exchange platform, focusing on seamless MetaMask wallet integration and optimized transaction management. Implemented token slippage functionality and enhanced swapping efficiency through Agile methodologies.`,
-    technologies: [
-      "React.js",
-      "Node.js",
-      "Solidity",
-      "Tailwind",
-      "Ethereum Blockchain",
-    ],
+    description:
+      "Led the development of a decentralized cryptocurrency exchange with MetaMask integration and optimized transaction management. Implemented token slippage handling and improved swapping efficiency using Agile methods.",
+    technologies: ["React.js", "Node.js", "Solidity", "Tailwind", "Ethereum"],
   },
 ];
 
-
 export const PROJECTS = [
-   {
-    title: "CollabDocs – Real-Time Collaborative Documentation Paltform",
+  {
+    title: "AI-Powered Medical Service Company ChatBot",
     image: project1,
     category: "Tech",
     description:
-      "Architected a secure, real-time collaborative platform enabling enterprises to create, edit, and share documents within private networks ensuring 100% data privacy and controlled access. Built with React (Vite), Tailwind CSS, and a microservice-based backend using Express.js, MongoDB, Redis (Upstash), Kafka, Socket.io, JWT, and Bcrypt — achieving lower latency and stable performance under 10K+ concurrent sessions in load testing. Implemented RBAC with encrypted authentication JWT, Bcrypt and no-copy viewer mode, strengthening document security & compliance. • Integrated real-time document editing, 1:1 and group chat, and synchronized collaboration sessions with instant updates using Socket.io.  ",
-    technologies:["React","Node.js","Express.js","MongoDB","Tailwind","JWT","Microservices","Kafka","Docker","Socket.io","Redis"],
-      link:"https://collab-docs-io.vercel.app/"
+      "Developed an LLM-based chatbot using React (Vite), Tailwind CSS, FastAPI, and LangChain, trained on medical company data for domain-specific query resolution. Implemented a RAG pipeline with Pinecone vector DB to improve contextual accuracy and response relevance. Built efficient data ingestion and chunking workflows to reduce latency, and increased engagement via AI-personalized conversations with Calendly and Telegram integrations.",
+    technologies: [
+      "React",
+      "FastAPI",
+      "Python",
+      "Tailwind",
+      "LangChain",
+      "RAG",
+      "Pinecone",
+      "OpenAI",
+      "Calendly",
+      "Telegram",
+    ],
+    link: "https://chatbot-3-frontend.vercel.app/",
   },
   {
-    title: " AI-Powered Medical Service Company ChatBot ",
+    title: "Modern Real-Estate Site",
     image: project1,
     category: "Tech",
     description:
-      "Developed an LLM-based chatbot using React (Vite), Tailwind CSS, FastAPI, and LangChain, trained on medical company data for domain-specific query resolution. • Implemented a RAG pipeline with Pinecone vector DB, enhancing contextual accuracy and response relevance by 45%. • Engineered efficient data ingestion and chunking workflows with LangChain, improving retrieval quality and reducing latency by 30%. • Increased user engagement and lead conversion by 35% through AI-personalized conversations and seamless integration of Calendly and Telegram widgets for instant scheduling and engagement.  ",
-    technologies:["React","FastAPI","Python","Tailwind","OpenAI","API","Pinecone","AI","Langchain","RAG"],
-      link:"https://chatbot-3-frontend.vercel.app/"
+      "Launched a real estate platform using React.js, Node.js, MongoDB, and Context API, improving user engagement by 50% with seamless property search and bookings. Deployed with CI/CD pipelines via GitHub, reducing downtime by 25%. Boosted reliability with automated UI testing using Selenium.",
+    technologies: [
+      "JavaScript",
+      "React.js",
+      "Node.js",
+      "MongoDB",
+      "Prisma",
+      "Postman",
+      "Material UI",
+      "Leaflet",
+      "OAuth",
+      "Selenium",
+      "CI/CD",
+    ],
+    link: "https://sk-homes-phi.vercel.app/",
+  },
+  {
+    title: "CollabDocs - Real-Time Collaborative Documentation Platform",
+    image: project1,
+    category: "Tech",
+    description:
+      "Architected a secure, real-time collaborative platform enabling enterprises to create, edit, and share documents within private networks with controlled access. Built with React (Vite), Tailwind CSS, and a microservice-based backend using Express.js, MongoDB, Redis (Upstash), Kafka, Socket.io, JWT, and bcrypt, achieving low latency and stable performance under 10K+ concurrent sessions. Implemented RBAC, no-copy viewer mode, and real-time collaboration with synchronized sessions and chat.",
+    technologies: [
+      "React",
+      "Tailwind",
+      "Express.js",
+      "MongoDB",
+      "Redis",
+      "Kafka",
+      "Socket.io",
+      "JWT",
+      "Docker",
+      "Microservices",
+    ],
+    link: "https://collab-docs-io.vercel.app/",
   },
   {
     title: "Portfolio Website",
     image: project1,
     category: "Tech",
     description:
-      "Launched a personal portfolio website to showcase design projects, increasing client and employer engagement by 40%. Enhanced performance by 30% using Vite for faster builds and optimized delivery.",
-    technologies: ["HTML", "CSS", "JavaScript", "React.js", "Node.js", "Vite","Framer motion"],
-    link:"https://portfolio-2-sk.vercel.app/"
-  },
-  {
-    title: "Modern Real Estate Website",
-    image: project1,
-    category: "Tech",
-    description:
-      "Deployed a responsive real estate platform allowing users to search and book properties. Integrated advanced search filters, location services with Leaflet, and user authentication with Auth0, reducing customer search time by 30% and increasing platform feasibility by 45%. Automation testing with Selenium improved fault tolerance by 20%.",
+      "Launched a personal portfolio website to showcase projects, improving engagement and performance using Vite for faster builds and optimized delivery.",
     technologies: [
       "HTML",
       "CSS",
       "JavaScript",
       "React.js",
       "Node.js",
-      "Selenium",
-      "MongoDB",
-      "Prisma",
-      "Mantine UI",
-      "MERN stack",
+      "Vite",
+      "Framer Motion",
     ],
-    link:"https://sk-homes-phi.vercel.app/"
+    link: "https://portfolio-2-sk.vercel.app/",
   },
   {
     title: "Decentralized Cryptocurrency Exchange DApp",
     image: project1,
     category: "Tech",
     description:
-      "Developed a decentralized cryptocurrency exchange platform with MetaMask wallet integration, improving user experience and reducing transaction time by 20%. Implemented token slippage functionality, optimizing trade fluctuation management by 15%, and enhanced swapping efficiency by 25% using Agile methodologies.",
+      "Developed a decentralized cryptocurrency exchange with MetaMask integration, token slippage handling, and optimized swapping efficiency.",
     technologies: [
       "HTML",
       "CSS",
       "JavaScript",
       "React.js",
       "Node.js",
-      "API",
-      "Finance",
       "Solidity",
-      "Ant-Design",
+      "Ant Design",
       "Tailwind",
-      "Ethereum Blockchain",
+      "Ethereum",
     ],
-    link:"https://bit-exchangex.netlify.app/"
+    link: "https://bit-exchangex.netlify.app/",
   },
-  // {
-  //   title: "Retail Sales & Customer Analysis",
-  //   description:
-  //     "Analyzed transaction data to identify sales trends and customer behavior, improving insight accuracy by 45%. Optimized data processing using Python, pandas, and NumPy, enhancing data merging and cleaning by 30%.",
-  //   technologies: [
-  //     "Python",
-  //     "pandas",
-  //     "NumPy",
-  //     "Jupyter Notebook",
-  //     "Excel",
-  //     "Data Visualization",
-  //   ],
-  //   category: "Data Analyst",
-  //   image: project1,
-  //   link: "https://github.com/sakshamkanojia19/quantium-DA-Tasks-Project",
-  // },
-  // {
-  //   title: "People BMI Analysis",
-  //   description:
-  //     "Analyzed BMI trends from demographic data, improving insight accuracy by 40%. Streamlined data processing using R and RStudio, enhancing efficiency by 35%.",
-  //   technologies: ["R", "RStudio", "Data Visualization"],
-  //   category: "Data Analyst",
-  //   image: project1,
-  //   link: "https://github.com/sakshamkanojia19/IBM-DataScience-DataAnalyst-Project",
-  // },
-  // {
-  //   title: "Apparels Sales Dashboard",
-  //   description:
-  //     "Built an interactive sales dashboard to analyze purchase trends and customer segmentation, increasing sales insights by 40%. Automated reporting using advanced Excel functions, reducing manual effort by 30%.",
-  //   technologies: [
-  //     "Excel",
-  //     "PivotTables",
-  //     "Data Analysis",
-  //     "Data Visualization",
-  //   ],
-  //   category: "Data Analyst",
-  //   image: project1,
-  //   link: "https://github.com/sakshamkanojia19/Data-Analyis-p3-Sales-Dashborad",
-  // },
 ];
-
 
 export const CONTACT = {
   address: "Delhi, India",

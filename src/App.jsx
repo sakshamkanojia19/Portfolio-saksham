@@ -1,32 +1,32 @@
-
-import Contact from "./components/Contact"
-import Experience from "./components/Experience"
-import Hero from "./components/Hero"
-import Navbar from "./components/Navbar"
-import './components/Navbar.css'
-import Projects from "./components/Projects"
-
-import Technologies from "./components/Technologies"
-
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
+import AboutPage from "./pages/AboutPage";
+import SkillsPage from "./pages/SkillsPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ExperiencePage from "./pages/ExperiencePage";
+import ContactPage from "./pages/ContactPage";
 
 const App = () => {
   return (
-    <div className="pverflow-x-hidden text-stone-300 antialiased">
-      <div className="fixed inset-0 -z-10">
-      <div class="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
+    <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(168,85,247,0.35),_rgba(2,2,2,0.9)_60%)]" />
+        <div className="absolute bottom-0 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(249,115,22,0.35),_rgba(2,2,2,0))] blur-3xl" />
       </div>
-    
-    <div className="container mx-auto px-8">
-      <Navbar/>
-      <Hero/>
-      <Technologies/>
-      <Projects />
-      <Experience />
-      <Contact/>
-    </div>
-      
-    </div>
-  )
-}
 
-export default App
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/skills" element={<SkillsPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/experience" element={<ExperiencePage />} />
+          <Route path="/contact" element={<ContactPage />} />
+        </Route>
+      </Routes>
+    </div>
+  );
+};
+
+export default App;

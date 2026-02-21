@@ -1,79 +1,107 @@
+import { Badge } from "./ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
-
-
-import { motion } from 'framer-motion';
-
-const techList = [
-  { name: 'JavaScript', color: 'text-yellow-400' },
-  { name: 'Python', color: 'text-blue-400' },
-  { name: 'Java', color: 'text-green-400' },
-  { name: 'React', color: 'text-cyan-400' },
-  { name: 'Next.js', color: 'text-gray-300' },
-  { name: 'Node.js', color: 'text-green-400' },
-  { name: 'FastAPI', color: 'text-purple-500' },
-  { name: 'Express', color: 'text-green-500' },
-  { name: 'Selenium', color: 'text-red-400' },
-  { name: 'Junit', color: 'text-cyan-400' },
-  { name: 'Mocha', color: 'text-amber-500' },
-  { name: 'MongoDB', color: 'text-green-600' },
-  { name: 'Prisma', color: 'text-purple-500' },
-  { name: 'Postman', color: 'text-orange-400' },
-  { name: 'Excel', color: 'text-blue-500' },
-  { name: 'Jupyter Notebook', color: 'text-yellow-500' },
-  { name: 'Pandas', color: 'text-pink-400' },
-  { name: 'NumPy', color: 'text-purple-400' },
-  { name: 'MS Office', color: 'text-blue-600' },
-  { name: 'Docker', color: 'text-blue-400' },
-  { name: 'ShadCN', color: 'text-gray-400' },
-  { name: 'AI Automation', color: 'text-purple-500'},
-  { name: 'GenAI', color: 'text-cyan-400' }, 
-  { name: 'LLM', color: 'text-blue-500' },
-  { name: 'RAG', color: 'text-green-400' },
-  { name: 'Tailwind CSS', color: 'text-teal-400' },
-  { name: 'Material UI', color: 'text-blue-300' },
-];
-
-// Framer Motion Animation Variants
-const floatVariant = (delay) => ({
-  initial: { y: 0, opacity: 0 },
-  animate: {
-    y: [-10, 10],
-    opacity: 1,
-    transition: {
-      duration: 2,
-      delay,
-      ease: "easeInOut",
-      repeat: Infinity,
-      repeatType: "reverse"
-    }
-  }
-});
+const skillGroups = {
+  ai: {
+    label: "AI & GenAI",
+    items: [
+      "LLM Integration",
+      "OpenAI",
+      "Claude",
+      "LangChain",
+      "RAG Pipelines",
+      "Vector Databases",
+      "Prompt Engineering",
+      "Context Engineering",
+      "AI Automation",
+    ],
+  },
+  backend: {
+    label: "Backend & Systems",
+    items: [
+      "FastAPI",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "PostgreSQL",
+      "Prisma",
+      "REST APIs",
+      "Kafka",
+      "Redis",
+      "WebSocket",
+      "Microservices",
+    ],
+  },
+  frontend: {
+    label: "Frontend",
+    items: [
+      "React.js",
+      "JavaScript",
+      "Tailwind CSS",
+      "ShadCN UI",
+      "Radix UI",
+    ],
+  },
+  devops: {
+    label: "Cloud & DevOps",
+    items: ["Docker", "CI/CD", "GCP", "Git", "GitHub", "Postman"],
+  },
+  concepts: {
+    label: "Concepts",
+    items: [
+      "Data Structures",
+      "OOP",
+      "System Design",
+      "SDLC",
+      "STLC",
+      "Agile",
+      "Scrum",
+      "Testing",
+      "Test Design",
+      "Debugging",
+      "Troubleshooting",
+      "Cloud Computing",
+    ],
+  },
+};
 
 const Technologies = () => {
   return (
-    <div className="pb-24">
-      <motion.h2
-        whileInView={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: -100 }}
-        transition={{ duration: 1.2 }}
-        className="my-20 text-center text-5xl font-bold tracking-wide"
-      >
-        Technologies
-      </motion.h2>
-      <div className="flex flex-wrap justify-center gap-4">
-        {techList.map((tech, index) => (
-          <motion.div
-            key={index}
-            variants={floatVariant(index * 0.2)}
-            initial="initial"
-            animate="animate"
-            className={`px-6 py-3 rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 shadow-xl border border-gray-700 ${tech.color} text-lg font-semibold cursor-pointer hover:scale-105 transition-transform duration-300`}
-          >
-            {tech.name}
-          </motion.div>
-        ))}
+    <section className="space-y-8">
+      <div className="space-y-3">
+        <p className="text-sm uppercase tracking-[0.3em] text-purple-300">
+          Skills
+        </p>
+        <h2 className="font-display text-3xl sm:text-4xl section-title">
+          Core technologies I use to ship AI products.
+        </h2>
       </div>
-    </div>
+
+      <Tabs defaultValue="ai">
+        <TabsList>
+          {Object.entries(skillGroups).map(([key, group]) => (
+            <TabsTrigger key={key} value={key}>
+              {group.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {Object.entries(skillGroups).map(([key, group]) => (
+          <TabsContent key={key} value={key}>
+            <div className="flex flex-wrap gap-3">
+              {group.items.map((skill, index) => (
+                <Badge
+                  key={skill}
+                  variant={index % 2 === 0 ? "purple" : "orange"}
+                >
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </section>
   );
 };
 

@@ -1,13 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+  font-family: "Sora", sans-serif;
+  background-color: #050505;
+}
 
-:root{
-  font-family: "Inter",sans-serif;
-  background-color: #000000;
-  
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #050505;
+  color: #f5f5f5;
+}
+
+.font-display {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.glow {
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.35);
+}
+
+.section-title {
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: rgba(249, 115, 22, 0.5);
+  color: #050505;
 }

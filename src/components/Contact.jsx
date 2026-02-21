@@ -1,13 +1,10 @@
-
-
-
-
-
-// contact form
-
-import React, { useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import toast, { Toaster } from "react-hot-toast";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -15,129 +12,115 @@ const Contact = () => {
     email: "",
     message: "",
   });
-
   const [errors, setErrors] = useState({});
   const [isSending, setIsSending] = useState(false);
 
-  // Update the state of the form data as the user types
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Form validation
   const validate = () => {
-    let errors = {};
-    if (!formData.name) errors.name = "Name is required";
+    const nextErrors = {};
+    if (!formData.name) nextErrors.name = "Name is required";
     if (!formData.email) {
-      errors.email = "Email is required";
+      nextErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = "Email is invalid";
+      nextErrors.email = "Email is invalid";
     }
-    if (!formData.message) errors.message = "Message is required";
-    return errors;
+    if (!formData.message) nextErrors.message = "Message is required";
+    return nextErrors;
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
-      setErrors({});
-      setIsSending(true);
-
-      emailjs
-        .send(
-          "service_7aanxef", // Replace with your EmailJS service ID
-          "template_yjkw4xd", // Replace with your EmailJS template ID
-          formData,
-          "bVCiV2X-6Gl5uXiWE" // Replace with your EmailJS user ID
-        )
-        .then((response) => {
-          console.log("SUCCESS!", response.status, response.text);
-          toast.success("Message sent successfully!");
-          setFormData({ name: "", email: "", message: "" });
-        })
-        .catch((error) => {
-          console.error("FAILED...", error);
-          toast.error("Failed to send message. Please try again!");
-        })
-        .finally(() => {
-          setIsSending(false);
-        });
+      return;
     }
+
+    setErrors({});
+    setIsSending(true);
+
+    emailjs
+      .send(
+        "service_7aanxef",
+        "template_yjkw4xd",
+        formData,
+        "bVCiV2X-6Gl5uXiWE"
+      )
+      .then(() => {
+        toast.success("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      })
+      .catch(() => {
+        toast.error("Failed to send message. Please try again!");
+      })
+      .finally(() => {
+        setIsSending(false);
+      });
   };
 
   return (
-    <div className="mx-auto max-w-3xl p-4" id="contact">
+    <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
       <Toaster />
-      <h2 className="my-8 text-center text-4xl font-semibold tracking-tighter">
-        Connect with Me / Hire Me
-      </h2>
-      <form onSubmit={handleSubmit}>
-        {/* Name Input */}
-        <div className="mb-4">
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Name"
-            className="mb-8 w-full appearance-none rounded-lg border border-gray-900 bg-transparent px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
-          />
-          {errors.name && (
-            <p className="text-sm text-red-700">{errors.name}</p>
-          )}
-        </div>
+      <div className="space-y-4">
+        <p className="text-sm uppercase tracking-[0.3em] text-orange-300">
+          Contact
+        </p>
+        <h2 className="font-display text-3xl sm:text-4xl section-title">
+          Let us build your next AI system together.
+        </h2>
+        <p className="text-white/70">
+          Share your goals, and I will respond with a clear plan and timeline.
+        </p>
+      </div>
 
-        {/* Email Input */}
-        <div className="mb-4">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className="mb-8 w-full appearance-none rounded-lg border border-gray-900 bg-transparent px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
-          />
-          {errors.email && (
-            <p className="text-sm text-blue-700">{errors.email}</p>
-          )}
-        </div>
-
-        {/* Message Input */}
-        <div className="mb-4">
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Message"
-            className="mb-8 w-full appearance-none rounded-lg border border-gray-900 bg-transparent px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
-            rows="4"
-          />
-          {errors.message && (
-            <p className="text-sm text-blue-700">{errors.message}</p>
-          )}
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className={`mb-8 w-full rounded  px-4 py-2 text-sm font-semibold text-white hover:bg-slate-900 ${
-            isSending ? "cursor-not-allowed opacity-50" : ""
-          }`}
-          disabled={isSending}
-        >
-          {isSending ? "Sending..." : "Send"}
-        </button>
-      </form>
-    </div>
+      <Card>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Your name"
+            />
+            {errors.name && (
+              <p className="text-xs text-orange-300">{errors.name}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email address"
+            />
+            {errors.email && (
+              <p className="text-xs text-orange-300">{errors.email}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Tell me about your project"
+            />
+            {errors.message && (
+              <p className="text-xs text-orange-300">{errors.message}</p>
+            )}
+          </div>
+          <Button type="submit" variant="gradient" size="lg" disabled={isSending}>
+            {isSending ? "Sending..." : "Send Message"}
+          </Button>
+        </form>
+      </Card>
+    </section>
   );
 };
 
