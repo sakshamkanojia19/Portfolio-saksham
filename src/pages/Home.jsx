@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import Hero from "../components/Hero";
 import About from "../components/About";
 import Technologies from "../components/Technologies";
@@ -13,15 +14,29 @@ const sectionVariants = {
 };
 
 const Home = () => {
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  const disableReveal = prefersReducedMotion || isMobile;
+
   return (
     <div className="space-y-20">
       <Hero />
       <Separator />
       <motion.div
         variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        initial={disableReveal ? false : "hidden"}
+        animate={disableReveal ? "visible" : undefined}
+        whileInView={disableReveal ? undefined : "visible"}
+        viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <About />
@@ -29,9 +44,10 @@ const Home = () => {
       <Separator />
       <motion.div
         variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        initial={disableReveal ? false : "hidden"}
+        animate={disableReveal ? "visible" : undefined}
+        whileInView={disableReveal ? undefined : "visible"}
+        viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <Technologies />
@@ -39,9 +55,10 @@ const Home = () => {
       <Separator />
       <motion.div
         variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        initial={disableReveal ? false : "hidden"}
+        animate={disableReveal ? "visible" : undefined}
+        whileInView={disableReveal ? undefined : "visible"}
+        viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <Projects />
@@ -49,9 +66,10 @@ const Home = () => {
       <Separator />
       <motion.div
         variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        initial={disableReveal ? false : "hidden"}
+        animate={disableReveal ? "visible" : undefined}
+        whileInView={disableReveal ? undefined : "visible"}
+        viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <Experience />
@@ -59,9 +77,10 @@ const Home = () => {
       <Separator />
       <motion.div
         variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        initial={disableReveal ? false : "hidden"}
+        animate={disableReveal ? "visible" : undefined}
+        whileInView={disableReveal ? undefined : "visible"}
+        viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <Contact />
