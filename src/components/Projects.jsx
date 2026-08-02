@@ -1,77 +1,114 @@
-import { useEffect, useState } from "react";
+import { FiArrowUpRight } from "react-icons/fi";
 import { PROJECTS } from "../constants";
-import { motion, useReducedMotion } from "framer-motion";
-import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
 
-const Projects = () => {
-  const techProjects = PROJECTS.filter(
-    (project) => project.category === "Tech"
-  );
-  const prefersReducedMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 768px)");
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  const disableReveal = prefersReducedMotion || isMobile;
+const ProjectCard = ({ project }) => {
+  const { featured } = project;
 
   return (
-    <section className="space-y-10">
-      <div className="space-y-3">
-        <p className="text-sm uppercase tracking-[0.3em] text-orange-300">
-          Projects
+    <Card
+      className={`flex h-full flex-col gap-5 ${
+        featured
+          ? "border-orange-300/25 bg-gradient-to-br from-purple-500/10 via-black/60 to-orange-400/10"
+          : ""
+      }`}
+    >
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {featured && <Badge variant="orange">Featured</Badge>}
+          <span className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+            {project.subtitle}
+          </span>
+        </div>
+        <h3
+          className={`font-display text-white ${
+            featured ? "text-xl sm:text-2xl" : "text-lg sm:text-xl"
+          }`}
+        >
+          {project.title}
+        </h3>
+        <p className="text-sm font-medium text-orange-200/90">
+          {project.tagline}
         </p>
-        <h2 className="font-display text-3xl sm:text-4xl section-title">
-          AI products and systems shipped in production.
-        </h2>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        {techProjects.map((project, index) => (
-          <motion.div
-            key={project.title}
-            initial={disableReveal ? false : { opacity: 0, y: 20 }}
-            animate={disableReveal ? { opacity: 1, y: 0 } : undefined}
-            whileInView={disableReveal ? undefined : { opacity: 1, y: 0 }}
-            viewport={disableReveal ? undefined : { once: true, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+      <ul className="space-y-2.5">
+        {project.highlights.map((point) => (
+          <li
+            key={point}
+            className="flex items-start gap-3 text-sm leading-relaxed text-white/70"
           >
-            <Card className="group space-y-6">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/70">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="space-y-3">
-                <h3 className="font-display text-xl text-white">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-white/70">{project.description}</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, i) => (
-                  <Badge key={`${project.title}-${tech}-${i}`}>{tech}</Badge>
-                ))}
-              </div>
-              {project.link && (
-                <Button asChild variant="outline" size="sm">
-                  <a href={project.link} target="_blank" rel="noopener noreferrer">
-                    View Project
-                  </a>
-                </Button>
-              )}
-            </Card>
-          </motion.div>
+            <span
+              className="mt-2 h-1 w-1 shrink-0 rounded-full bg-purple-400"
+              aria-hidden="true"
+            />
+            <span>{point}</span>
+          </li>
         ))}
+      </ul>
+
+      <ul className="flex flex-wrap gap-2">
+        {project.technologies.map((tech) => (
+          <li key={tech}>
+            <Badge>{tech}</Badge>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-auto pt-1">
+        {project.link ? (
+          <Button asChild variant={featured ? "gradient" : "outline"} size="sm">
+            <a href={project.link} target="_blank" rel="noopener noreferrer">
+              {project.linkLabel}
+              <FiArrowUpRight aria-hidden="true" />
+            </a>
+          </Button>
+        ) : (
+          // TODO(saksham): add the repo/demo URL in src/constants/index.js to
+          // turn this into a real button.
+          <span className="inline-flex items-center rounded-full border border-dashed border-white/15 px-4 py-2 text-xs text-white/40">
+            {project.linkLabel} — link coming soon
+          </span>
+        )}
+      </div>
+    </Card>
+  );
+};
+
+const Projects = ({ showHeading = true }) => {
+  const [featured, ...rest] = PROJECTS;
+
+  return (
+    <section
+      aria-labelledby={showHeading ? "projects-heading" : undefined}
+      aria-label={showHeading ? undefined : "Projects"}
+      className="space-y-8"
+    >
+      {showHeading && (
+        <SectionHeading
+          id="projects-heading"
+          eyebrow="Projects"
+          title="AI products and systems shipped in production."
+          lede="Built end to end — architecture, backend, deployment, and the iteration after launch."
+        />
+      )}
+
+      <div className="space-y-4">
+        <Reveal>
+          <ProjectCard project={featured} />
+        </Reveal>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {rest.map((project, index) => (
+            <Reveal key={project.title} delay={index * 0.08}>
+              <ProjectCard project={project} />
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

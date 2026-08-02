@@ -1,50 +1,62 @@
-import { HERO_CONTENT } from "../constants";
-import { Badge } from "./ui/badge";
+import { ABOUT_CONTENT, ABOUT_HIGHLIGHTS, FOCUS_AREAS } from "../constants";
 import { Card } from "./ui/card";
+import Counter from "./Counter";
+import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
 
-const highlights = [
-  { label: "Automation Impact", value: "60%", detail: "Manual effort reduced" },
-  { label: "RAG Pipelines", value: "LLM", detail: "LangChain + Pinecone" },
-  { label: "Delivery", value: "E2E", detail: "From requirements to deployment" },
-];
-
-const focusAreas = [
-  "LLM integration and AI workflow orchestration",
-  "Scalable APIs with FastAPI, Node.js, and PostgreSQL",
-  "Reliable systems with CI/CD, testing, and cloud delivery",
-];
-
-const About = () => {
+const About = ({ showHeading = true }) => {
   return (
-    <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Badge variant="purple">AI Engineer</Badge>
-          <Badge variant="orange">Full-Stack</Badge>
-        </div>
-        <h2 className="font-display text-3xl sm:text-4xl section-title">
-          Building production-grade AI systems that move real metrics.
-        </h2>
-        <p className="text-white/75 leading-relaxed">{HERO_CONTENT}</p>
-        <ul className="space-y-3 text-white/70">
-          {focusAreas.map((item) => (
-            <li key={item} className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-orange-400" />
-              <span>{item}</span>
-            </li>
+    <section
+      aria-labelledby={showHeading ? "about-heading" : undefined}
+      aria-label={showHeading ? undefined : "About"}
+      className="space-y-8"
+    >
+      <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
+        <Reveal x={-32} className="space-y-6">
+          {showHeading && (
+            <SectionHeading
+              id="about-heading"
+              eyebrow="About"
+              title="I build autonomous AI systems that replace operational work."
+            />
+          )}
+          <p className="text-sm leading-relaxed text-white/70 sm:text-base">
+            {ABOUT_CONTENT}
+          </p>
+          <ul className="space-y-3 text-sm text-white/70 sm:text-base">
+            {FOCUS_AREAS.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span
+                  className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-400"
+                  aria-hidden="true"
+                />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
+        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+          {ABOUT_HIGHLIGHTS.map((item, index) => (
+            <Reveal key={item.label} x={32} delay={index * 0.08}>
+              <Card className="h-full space-y-1.5 p-5">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-white/45">
+                  {item.label}
+                </p>
+                <p className="font-display text-3xl text-white">
+                  {item.count != null ? (
+                    <Counter value={item.count} suffix={item.suffix} />
+                  ) : (
+                    item.value
+                  )}
+                </p>
+                <p className="text-xs leading-relaxed text-white/60">
+                  {item.detail}
+                </p>
+              </Card>
+            </Reveal>
           ))}
-        </ul>
-      </div>
-      <div className="grid gap-4">
-        {highlights.map((item) => (
-          <Card key={item.label} className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/50">
-              {item.label}
-            </p>
-            <p className="font-display text-3xl text-white">{item.value}</p>
-            <p className="text-sm text-white/60">{item.detail}</p>
-          </Card>
-        ))}
+        </div>
       </div>
     </section>
   );

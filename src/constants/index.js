@@ -1,63 +1,173 @@
-import project1 from "../assets/projects/imag2.jpg";
+// Single source of truth for site content.
+// Keep this file aligned with the latest resume — components read from here only.
 
-export const HERO_CONTENT = `I build AI-driven full-stack products with React.js, FastAPI, and Node.js. I integrate LLMs (OpenAI, Claude) using LangChain RAG pipelines and vector databases, and deliver scalable SaaS systems & Workflows. I focus on clean system design, testing, CI/CD, and cloud delivery on GCP.`;
+export const PROFILE = {
+  name: "Saksham Kanojia",
+  firstName: "Saksham",
+  lastName: "Kanojia",
+  title: "AI Automation Engineer · Full-Stack Developer · Generative AI",
+  tagline:
+    "I build AI-native products and automation systems with LLMs, RAG pipelines, and scalable SaaS that deliver measurable impact.",
+  signatureLines: [
+    "I don't add AI as a feature — I build AI-native systems as infrastructure.",
+    "I think in systems, not scripts.",
+  ],
+  location: "Delhi, India",
+  linkedin: "https://www.linkedin.com/in/saksham-kanojia-7895b7217/",
+  github: "https://github.com/sakshamkanojia19",
+};
+
+// Latest general resume (Google Drive). Swap to a self-hosted PDF in /public
+// later if you want an actual file download instead of the Drive viewer.
+export const RESUME_URL =
+  "https://drive.google.com/file/d/1o9y52N02JNEXnNzGVTm2BIiHlhNv5wPJ/view?usp=sharing";
+
+export const SITE_URL = "https://saksham-kanojia.vercel.app";
+
+export const ABOUT_CONTENT = `I build autonomous AI systems that replace operational work inside real companies. As an AI Automation Engineer, I design and deploy production-grade LLM agents, RAG pipelines, and AI-native SaaS products from 0→1 — owning architecture, backend, deployment, and iteration. My systems reduce manual operational effort by 60%+ across marketing, hiring, outreach, and internal operations. I care about reliability in production, latency and cost optimization, and shipping fast then iterating faster. I operate at the intersection of AI engineering and business execution.`;
+
+// `count`/`suffix` drive the animated counters; `value` is the static fallback.
+export const ABOUT_HIGHLIGHTS = [
+  {
+    label: "Operational Impact",
+    value: "60%+",
+    count: 60,
+    suffix: "%+",
+    detail: "Manual effort removed across internal workflows",
+  },
+  {
+    label: "Platforms Shipped",
+    value: "5+",
+    count: 5,
+    suffix: "+",
+    detail: "Internal SaaS products designed and delivered 0→1",
+  },
+  {
+    label: "Ownership",
+    value: "0→1",
+    detail: "Architecture, backend, deployment, iteration",
+  },
+];
+
+export const FOCUS_AREAS = [
+  "Production LLM agents, RAG pipelines, and multi-step orchestration",
+  "AI-native SaaS from architecture through deployment and iteration",
+  "Reliability, latency, and cost optimization as first-class concerns",
+];
+
+// Grouped as on the resume — with a `note` per group so the site says what the
+// resume can't: how each layer is actually used in production.
+export const SKILL_GROUPS = [
+  {
+    key: "ai",
+    label: "AI & LLM Systems",
+    accent: "purple",
+    note: "My daily toolkit — agents, retrieval, and orchestration running in production, not demos.",
+    items: [
+      "LLMs (OpenAI, Claude)",
+      "LangChain",
+      "LangGraph",
+      "AI Agents & multi-step workflows",
+      "Tool calling",
+      "RAG",
+      "Pinecone (vector search)",
+      "Embedding-based retrieval",
+      "Prompt & context engineering",
+      "n8n",
+    ],
+  },
+  {
+    key: "languages",
+    label: "Languages",
+    accent: "orange",
+    note: "Python for AI backends, JavaScript end to end.",
+    items: ["Python", "JavaScript"],
+  },
+  {
+    key: "backend",
+    label: "Backend & APIs",
+    accent: "orange",
+    note: "Async-first services that front every AI system I ship.",
+    items: ["FastAPI", "Node.js (Express)", "REST APIs", "Async services"],
+  },
+  {
+    key: "frontend",
+    label: "Frontend",
+    accent: "purple",
+    note: "Fast, clean interfaces for AI products — this site included.",
+    items: ["React.js", "Tailwind CSS"],
+  },
+  {
+    key: "databases",
+    label: "Databases",
+    accent: "orange",
+    note: "Document and relational, picked per workload.",
+    items: ["MongoDB", "PostgreSQL"],
+  },
+  {
+    key: "cloud",
+    label: "Cloud & Infra",
+    accent: "purple",
+    note: "Shipped to GCP Cloud Run, AWS EC2, and Zeabur with CI/CD.",
+    items: ["AWS", "GCP", "Zeabur", "Docker", "CI/CD"],
+  },
+  {
+    key: "systems",
+    label: "Systems & Messaging",
+    accent: "orange",
+    note: "Real-time presence, caching, and per-user rate limiting.",
+    items: ["Redis", "WebSockets"],
+  },
+  {
+    key: "fundamentals",
+    label: "Fundamentals",
+    accent: "purple",
+    note: "The base layer under everything above.",
+    items: [
+      "Data Structures & Algorithms",
+      "OOP",
+      "System Design (HLD/LLD)",
+      "Debugging",
+      "Test-case design",
+    ],
+  },
+];
 
 export const EXPERIENCES = [
   {
-    year: "Apr 2025 - Present",
+    year: "Apr 2025 – Present",
     role: "AI Automation Engineer",
     company: "Digital Web Solutions",
-    description:
-      "Designed, built, and deployed production-grade AI automation systems and internal AI SaaS platforms, reducing manual operational effort by 60%. Engineered LLM-powered chatbots using LangChain RAG pipelines with Pinecone vector search, integrating FastAPI and Node.js services for context-aware, multi-turn interactions. Architected internal business platforms (task management, expense management, hiring pipelines, competitor analysis, AI cold outreach, employee fitment) using Python, FastAPI, React, and AI workflow orchestration.",
+    current: true,
+    points: [
+      "Designed and shipped 5+ internal SaaS platforms — task & meeting management, expense management with business-unit and SPOC-level analytics, employee and freelance management — reducing manual operations by 60%.",
+      "Built AI-powered automation pipelines and chatbot systems on LLM architectures (LangChain, RAG with Pinecone) and n8n, including multi-step agent workflows with tool calling and task routing.",
+      "Engineered RAG ingestion, chunking, and retrieval pipelines with grounding strategies, improving relevance and reliability in production.",
+      "Architected cross-platform integrations enabling real-time task sync between systems, with user-specific dashboards and RBAC-based access control.",
+      "Leveraged AI-assisted development (Claude Code, Codex) to accelerate iteration while maintaining scalable, production-reliable system design.",
+    ],
     technologies: [
-      "Python",
-      "FastAPI",
-      "AI Automation",
-      "n8n",
-      "React.js",
-      "Node.js",
       "LangChain",
-      "Pinecone",
       "RAG",
-      "LLM",
+      "Pinecone",
+      "n8n",
       "OpenAI",
       "Claude",
+      "FastAPI",
+      "Node.js",
+      "React.js",
       "MongoDB",
       "Docker",
-      "GCP",
       "CI/CD",
     ],
   },
   {
-    year: "Apr 2025 - Sep 2025",
-    role: "Business AI Automation Trainee",
-    company: "Digital Web Solutions",
-    description:
-      "Engineered AI-powered automations and RPA solutions using ChatGPT, Gemini, and RAG models, reducing manual effort by 60%. Co-developed LLM-powered cognitive AI chatbots with OpenAI, React, Node.js, Express, PostgreSQL, and MongoDB, using prompt engineering for context-aware interactions. Automated complex business processes using Python, Zapier, and Make, delivering systems like competitor analysis tools and hiring workflows.",
-    technologies: [
-      "MongoDB",
-      "PostgreSQL",
-      "Node.js",
-      "Express.js",
-      "AI",
-      "Automation",
-      "Zapier",
-      "Make",
-      "RPA",
-      "LLM",
-      "Gemini",
-      "ChatGPT",
-      "Prompt Engineering",
-      "RAG",
-      "OpenAI",
-    ],
-  },
-  {
-    year: "Jan 2025 - Mar 2025",
+    year: "Jan 2025 – Mar 2025",
     role: "Full Stack Development Intern",
     company: "Unified Mentor",
-    description:
-      "Built and deployed full-stack web applications using React.js, FastAPI, Node.js, MongoDB, Docker, and CI/CD pipelines on AWS (EC2), improving deployment efficiency and user experience by 35%. Contributed to code reviews, API development, and technical documentation, improving project delivery success by 60%. Implemented unit, functional, and REST API testing with Selenium, Jest, and Postman, reducing production bugs by 40% and improving backend reliability.",
+    points: [
+      "Built and deployed full-stack apps (React, FastAPI, Node.js, MongoDB, Docker, AWS EC2) with automated testing (Jest, Selenium, Postman) and CI/CD — deployment efficiency +35%, production bugs −40%.",
+    ],
     technologies: [
       "React.js",
       "FastAPI",
@@ -66,154 +176,198 @@ export const EXPERIENCES = [
       "Docker",
       "AWS EC2",
       "CI/CD",
-      "Selenium",
       "Jest",
+      "Selenium",
       "Postman",
     ],
   },
   {
-    year: "Dec 2024 - Jan 2025",
-    role: "Web Developer Intern",
-    company: "Oasis Infobyte",
-    description:
-      "Built MERN stack projects following SDLC, improving development efficiency by 35%. Optimized CI/CD workflows, reducing deployment time by 20%.",
-    technologies: [
-      "MERN",
-      "React",
-      "JavaScript",
-      "REST APIs",
-      "MongoDB",
-      "Node.js",
-      "Express.js",
-      "Tailwind CSS",
-      "CI/CD",
-    ],
-  },
-  {
-    year: "Jan 2024 - Feb 2024",
+    year: "Jan 2024 – Feb 2024",
     role: "Data Science & Generative AI Intern",
     company: "IBM SkillBuild",
-    description:
-      "Created interactive data visualizations using R and RStudio, improving data interpretation by 40%. Explored Generative AI concepts and tools to enhance AI-driven workflows. Crafted effective prompts for LLMs like ChatGPT, boosting response accuracy and relevance.",
-    technologies: ["R", "RStudio", "Generative AI", "Prompt Engineering"],
+    points: [
+      "Explored GenAI/LLM workflows and prompt engineering; built data visualizations in R/RStudio.",
+    ],
+    technologies: ["Generative AI", "Prompt Engineering", "R", "RStudio"],
   },
-  {
-    year: "Sep 2023 - Nov 2023",
-    role: "Cybersecurity & Ethical Hacking Intern",
-    company: "Rinex.ai",
-    description:
-      "Performed cybersecurity tasks including data gathering, vulnerability analysis, and network sniffing. Conducted penetration testing using Nmap, Wireshark, OWASP ZAP, and Metasploit, and produced actionable vulnerability reports.",
-    technologies: ["Nmap", "Wireshark", "OWASP ZAP", "Metasploit"],
-  },
-  {
-    year: "2023 - 2024",
-    role: "Major Project Lead (Decentralized Cryptocurrency Exchange DApp)",
-    company: "College Final Year Project",
-    description:
-      "Led the development of a decentralized cryptocurrency exchange with MetaMask integration and optimized transaction management. Implemented token slippage handling and improved swapping efficiency using Agile methods.",
-    technologies: ["React.js", "Node.js", "Solidity", "Tailwind", "Ethereum"],
-  },
+];
+
+export const EDUCATION = {
+  degree: "B.Tech, Information Technology",
+  institution: "Maharaja Surajmal Institute of Technology, New Delhi",
+  period: "Nov 2020 – Jun 2024",
+  score: "8.7 CGPA",
+};
+
+export const CERTIFICATIONS = [
+  "OCI Generative AI Certified — Oracle",
+  "Docker Essentials — Udemy",
 ];
 
 export const PROJECTS = [
   {
-    title: "AI-Powered Medical Service Company ChatBot",
-    image: project1,
-    category: "Tech",
-    description:
-      "Developed an LLM-based chatbot using React (Vite), Tailwind CSS, FastAPI, and LangChain, trained on medical company data for domain-specific query resolution. Implemented a RAG pipeline with Pinecone vector DB to improve contextual accuracy and response relevance. Built efficient data ingestion and chunking workflows to reduce latency, and increased engagement via AI-personalized conversations with Calendly and Telegram integrations.",
+    title: "CollabDocs",
+    subtitle: "AI-Native Collaborative Document Workspace",
+    featured: true,
+    tagline: "An AI-native doc workspace where permissions come BEFORE generation.",
+    highlights: [
+      "Permission-aware RAG — retrieval filters chunks by document ACLs before generation, so AI answers can't surface content a user isn't allowed to see (prompt-injection resistant), with evidence-bound citations.",
+      "Tiered AI: deterministic local summaries/mind-maps at zero API cost; OpenAI gated to paid tiers with per-user rate limiting and artifact caching.",
+      "Real-time co-editing and presence over Socket.IO with server-side role enforcement.",
+      "Modular monolith; CI/CD with live MongoDB/Redis smoke tests, auto-deployed to Cloud Run.",
+    ],
+    technologies: [
+      "React",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Socket.IO",
+      "Redis",
+      "OpenAI",
+      "Docker",
+      "GitHub Actions",
+      "Cloud Run",
+    ],
+    link: "https://collabdocs-v1.vercel.app/",
+    linkLabel: "Live demo",
+  },
+  {
+    title: "AI Lead Intelligence Agent",
+    subtitle: "Agentic research & outreach pipeline",
+    tagline:
+      "Turns a company domain plus an ICP into structured insight and personalized outreach.",
+    highlights: [
+      "End-to-end agentic pipeline converting company/domain + ICP into structured insights and personalized outreach.",
+      "FastAPI backend with async scraping, LLM summarization, and MongoDB storage.",
+      "Reduced manual research and improved outbound quality.",
+    ],
+    technologies: ["FastAPI", "Python", "LLMs", "MongoDB", "Async scraping"],
+    // TODO(saksham): add repo / demo URL
+    link: null,
+    linkLabel: "Repo / demo",
+  },
+  {
+    title: "AI-Powered Medical Service Chatbot",
+    subtitle: "Domain-specific RAG assistant",
+    tagline:
+      "A grounded RAG chatbot tuned for a single medical domain, wired into booking flows.",
+    highlights: [
+      "Domain-specific RAG chatbot (React, FastAPI, LangChain, Pinecone) with engineered ingestion, chunking, and retrieval — relevance +45%, latency −30%.",
+      "Integrations (Calendly, Telegram) lifted lead conversion +35%.",
+    ],
     technologies: [
       "React",
       "FastAPI",
-      "Python",
-      "Tailwind",
       "LangChain",
-      "RAG",
       "Pinecone",
-      "OpenAI",
+      "RAG",
       "Calendly",
       "Telegram",
     ],
     link: "https://chatbot-3-frontend.vercel.app/",
-  },
-  {
-    title: "Modern Real-Estate Site",
-    image: project1,
-    category: "Tech",
-    description:
-      "Launched a real estate platform using React.js, Node.js, MongoDB, and Context API, improving user engagement by 50% with seamless property search and bookings. Deployed with CI/CD pipelines via GitHub, reducing downtime by 25%. Boosted reliability with automated UI testing using Selenium.",
-    technologies: [
-      "JavaScript",
-      "React.js",
-      "Node.js",
-      "MongoDB",
-      "Prisma",
-      "Postman",
-      "Material UI",
-      "Leaflet",
-      "OAuth",
-      "Selenium",
-      "CI/CD",
-    ],
-    link: "https://sk-homes-phi.vercel.app/",
-  },
-  {
-    title: "CollabDocs - Real-Time Collaborative Documentation Platform",
-    image: project1,
-    category: "Tech",
-    description:
-      "Architected a secure, real-time collaborative platform enabling enterprises to create, edit, and share documents within private networks with controlled access. Built with React (Vite), Tailwind CSS, and a microservice-based backend using Express.js, MongoDB, Redis (Upstash), Kafka, Socket.io, JWT, and bcrypt, achieving low latency and stable performance under 10K+ concurrent sessions. Implemented RBAC, no-copy viewer mode, and real-time collaboration with synchronized sessions and chat.",
-    technologies: [
-      "React",
-      "Tailwind",
-      "Express.js",
-      "MongoDB",
-      "Redis",
-      "Kafka",
-      "Socket.io",
-      "JWT",
-      "Docker",
-      "Microservices",
-    ],
-    link: "https://collab-docs-io.vercel.app/",
-  },
-  {
-    title: "Portfolio Website",
-    image: project1,
-    category: "Tech",
-    description:
-      "Launched a personal portfolio website to showcase projects, improving engagement and performance using Vite for faster builds and optimized delivery.",
-    technologies: [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "React.js",
-      "Node.js",
-      "Vite",
-      "Framer Motion",
-    ],
-    link: "https://portfolio-2-sk.vercel.app/",
-  },
-  {
-    title: "Decentralized Cryptocurrency Exchange DApp",
-    image: project1,
-    category: "Tech",
-    description:
-      "Developed a decentralized cryptocurrency exchange with MetaMask integration, token slippage handling, and optimized swapping efficiency.",
-    technologies: [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "React.js",
-      "Node.js",
-      "Solidity",
-      "Ant Design",
-      "Tailwind",
-      "Ethereum",
-    ],
-    link: "https://bit-exchangex.netlify.app/",
+    linkLabel: "Live demo",
   },
 ];
+
+export const AI_POV = [
+  {
+    title: "Permissions before generation",
+    description:
+      "Most RAG checks access after retrieval — too late. I filter by ACL inside the query, so unauthorized content never enters the model's context.",
+  },
+  {
+    title: "AI-native, not AI-as-a-feature",
+    description:
+      "I design systems where AI is infrastructure — agents, retrieval, and orchestration are the architecture, not a bolt-on.",
+  },
+  {
+    title: "Graceful degradation",
+    description:
+      "Products should work when the key is unplugged: deterministic local fallbacks, cost caps, and sane defaults over hard failures.",
+  },
+  {
+    title: "Reliability & cost are features",
+    description:
+      "Latency, token cost, rate limits, and evaluation are first-class concerns, not afterthoughts.",
+  },
+];
+
+export const CURRENTLY_EXPLORING = {
+  intro: "Things I'm going deeper on right now.",
+  items: [
+    {
+      title: "Agent architectures & memory systems",
+      detail: "Session, long-term, and vector memory.",
+    },
+    {
+      title: "LLM & agent evaluation frameworks",
+      detail: "LLM-as-judge, grounding checks, regression suites.",
+    },
+    {
+      title: "Observability & tracing",
+      detail: "Making agentic systems debuggable in production.",
+    },
+    {
+      title: "MCP (Model Context Protocol)",
+      detail: "Schema-driven tools and typed capability surfaces.",
+    },
+    {
+      title: "Open-weight models & self-hosting",
+      detail: "MoE architectures and model serving.",
+    },
+    {
+      title: "Voice AI & emerging dev tools",
+      detail: "Where the next interface layer is heading.",
+    },
+  ],
+  humanNote:
+    "I build side projects most weekends, I'm mildly obsessed with AI dev tooling (Claude Code, Cursor), and I like turning messy manual workflows into systems that run themselves.",
+};
+
+export const WRITING = {
+  intro: "Notes on building AI systems in production.",
+  posts: [
+    {
+      title: "Permissions before generation",
+      blurb:
+        "Why permission-aware retrieval belongs inside the query, not after it — and how CollabDocs enforces it.",
+      // TODO(saksham): replace with the direct LinkedIn post URL
+      href: PROFILE.linkedin,
+      source: "LinkedIn",
+    },
+  ],
+};
+
+// Audience-targeted CTAs — different visitors need different next steps.
+export const WORK_WITH_ME = [
+  {
+    audience: "Recruiters & Hiring Managers",
+    pitch:
+      "~1.5 years shipping production AI — agents, RAG, and internal SaaS with measurable impact. The resume has the summary; the projects here show the systems.",
+    cta: { label: "View Resume", href: RESUME_URL, external: true },
+    secondary: { label: "LinkedIn", href: PROFILE.linkedin, external: true },
+  },
+  {
+    audience: "Founders & Teams",
+    pitch:
+      "Have a manual workflow burning hours? I've automated hiring, outreach, expense, and ops pipelines — cutting manual effort 60%+. Tell me the mess; I'll map the system.",
+    cta: { label: "Start a conversation", href: "/contact", external: false },
+    secondary: { label: "See the projects", href: "/projects", external: false },
+  },
+  {
+    audience: "Developers",
+    pitch:
+      "I write about permission-aware RAG and agentic systems, and I build in public most weekends. Come argue with me about retrieval design.",
+    cta: { label: "GitHub", href: PROFILE.github, external: true },
+    secondary: { label: "AI POV", href: "/ai-pov", external: false },
+  },
+];
+
+export const PERSONAL = {
+  beyondCode:
+    "Most weekends you'll find me prototyping something — half my side projects start as \"this workflow annoys me.\"",
+  funFact: "I shipped 5+ internal platforms before my first work anniversary.",
+};
 
 export const CONTACT = {
   address: "Delhi, India",
