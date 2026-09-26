@@ -1,15 +1,15 @@
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { FiArrowUpRight, FiDownload } from "react-icons/fi";
-// 680x680 WebP (18 KB) generated from profilepic.png (944 KB) — this is the LCP
-// image, and the original was ~50x larger than the rendered size needed.
+import { FiArrowDownRight, FiArrowUpRight } from "react-icons/fi";
+// 680x680 WebP (18 KB) generated from profilepic.png (944 KB) — the LCP image.
 import profilePic from "../assets/profilepic.webp";
-import { PROFILE, RESUME_URL } from "../constants";
+import { PROFILE, PROOF, RESUME_URL } from "../constants";
 import { Button } from "./ui/button";
 import RotatingText from "./RotatingText";
+import Counter from "./Counter";
+import { EASE } from "./Reveal";
 
-// All true — what actually gets built week to week.
 const BUILDING = [
   "agentic workflows",
   "RAG pipelines",
@@ -18,185 +18,181 @@ const BUILDING = [
   "automation pipelines",
 ];
 
-const fadeUp = (delay, disabled) =>
-  disabled
-    ? {}
-    : {
-        initial: { opacity: 0, y: 18 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.6, delay, ease: "easeOut" },
-      };
-
+/**
+ * Hero.
+ *
+ * Rebuilt around three corrections to the previous version:
+ *
+ * 1. The <h1> is the proposition, not the name. "Saksham Kanojia" set at 60px
+ *    told a scanning recruiter nothing; what he *does* now occupies that slot,
+ *    and the name sits in the portrait caption where it belongs.
+ * 2. The proof is above the fold. The 60% / 5+ / 0→1 figures are the most
+ *    persuasive content on the site and they used to live halfway down the
+ *    About section.
+ * 3. The portrait is a monochrome plate, not a circle inside a purple-to-orange
+ *    blur. It also no longer fades independently of the text column on scroll,
+ *    which used to visibly de-sync the two halves.
+ *
+ * The pointer spotlight that used to be scoped to this section now lives in
+ * <CursorGlow /> at the app level, so the light follows across the whole site
+ * instead of dying at the hero's edges.
+ */
 const Hero = () => {
   const prefersReducedMotion = useReducedMotion();
 
-  // Parallax planes: as the hero scrolls away, the portrait sinks slightly
-  // while the pull-quote lifts — two speeds, gentle depth.
-  const { scrollY } = useScroll();
-  const portraitY = useTransform(scrollY, [0, 700], [0, 90]);
-  const quoteY = useTransform(scrollY, [0, 700], [0, -50]);
-  const heroFade = useTransform(scrollY, [0, 500], [1, 0.35]);
+  const line = (i) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { y: "112%" },
+          animate: { y: 0 },
+          transition: { duration: 1, delay: 0.1 + i * 0.09, ease: EASE },
+        };
+
+  const fade = (delay) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.8, delay, ease: EASE },
+        };
 
   return (
     <section aria-labelledby="hero-heading" className="relative">
-      <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
-        <div className="space-y-6 text-center lg:text-left">
-          <motion.p
-            {...fadeUp(0, prefersReducedMotion)}
-            className="flex items-center justify-center gap-2 font-mono text-xs text-white/50 sm:text-sm lg:justify-start"
+      <div className="relative grid items-end gap-12 lg:grid-cols-[1.35fr_0.65fr] lg:gap-16">
+        <div>
+          <m.p
+            {...fade(0)}
+            className="flex items-center gap-2.5 font-mono text-xs text-ink-3"
           >
-            <span
-              className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 motion-reduce:animate-none"
-              aria-hidden="true"
-            />
-            open to roles & projects
-          </motion.p>
-
-          <motion.h1
-            id="hero-heading"
-            {...fadeUp(0.08, prefersReducedMotion)}
-            className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"
-          >
-            {PROFILE.firstName}{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-orange-300 bg-clip-text text-transparent">
-              {PROFILE.lastName}
+            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ok opacity-60 motion-reduce:hidden" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-ok" />
             </span>
-          </motion.h1>
+            {PROFILE.availability}
+          </m.p>
 
-          <motion.p
-            {...fadeUp(0.16, prefersReducedMotion)}
-            className="text-base text-white/75 sm:text-lg"
-          >
-            {PROFILE.title}
-          </motion.p>
+          <h1 id="hero-heading" className="mt-6 text-4xl">
+            {PROFILE.proposition.map((text, i) => (
+              <span key={text} className="line-mask">
+                <m.span className="block" {...line(i)}>
+                  {/* Only the payload word carries the accent — one amber
+                      moment in the headline, not a gradient across all of it. */}
+                  {i === PROFILE.proposition.length - 1 ? (
+                    <span className="text-accent">{text}</span>
+                  ) : (
+                    text
+                  )}
+                </m.span>
+              </span>
+            ))}
+          </h1>
 
-          <motion.p
-            {...fadeUp(0.24, prefersReducedMotion)}
-            className="mx-auto max-w-xl text-sm leading-relaxed text-white/65 sm:text-base lg:mx-0"
+          <m.p
+            {...fade(0.5)}
+            className="mt-7 max-w-measure text-lg text-ink-2"
           >
             {PROFILE.tagline}
-          </motion.p>
+          </m.p>
 
-          <motion.p
-            {...fadeUp(0.28, prefersReducedMotion)}
-            className="font-mono text-xs text-white/45 sm:text-sm"
-          >
-            <span className="text-purple-300" aria-hidden="true">
-              &gt;{" "}
-            </span>
+          <m.p {...fade(0.58)} className="mt-4 font-mono text-xs text-ink-3">
+            <span className="text-ink-4">{"> "}</span>
             currently building{" "}
-            <RotatingText items={BUILDING} className="font-semibold text-orange-300" />
-          </motion.p>
+            <RotatingText items={BUILDING} className="text-accent" />
+          </m.p>
 
-          <motion.div
-            {...fadeUp(0.32, prefersReducedMotion)}
-            className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start"
-          >
-            <Button
-              asChild
-              variant="gradient"
-              size="lg"
-              className="shadow-[0_0_30px_rgba(249,115,22,0.35)]"
-            >
-              <a href={RESUME_URL} target="_blank" rel="noopener noreferrer">
-                <FiDownload aria-hidden="true" />
-                Download Resume
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link to="/contact">
-                Hire Me
-                <FiArrowUpRight aria-hidden="true" />
+          <m.div {...fade(0.66)} className="mt-9 flex flex-wrap items-center gap-3">
+            <Button asChild size="lg">
+              <Link to="/projects">
+                See the work
+                <FiArrowDownRight aria-hidden="true" />
               </Link>
             </Button>
-          </motion.div>
+            <Button asChild variant="subtle" size="lg">
+              <a href={RESUME_URL} target="_blank" rel="noopener noreferrer">
+                Resume
+                <FiArrowUpRight aria-hidden="true" />
+              </a>
+            </Button>
 
-          <motion.div
-            {...fadeUp(0.4, prefersReducedMotion)}
-            className="flex items-center justify-center gap-3 lg:justify-start"
-          >
-            <a
-              href={PROFILE.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn profile"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-lg text-white/70 transition hover:border-orange-300/50 hover:text-orange-300"
-            >
-              <FaLinkedin aria-hidden="true" />
-            </a>
-            <a
-              href={PROFILE.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub profile"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-lg text-white/70 transition hover:border-orange-300/50 hover:text-orange-300"
-            >
-              <FaGithub aria-hidden="true" />
-            </a>
-            <span className="ml-1 text-xs text-white/45">{PROFILE.location}</span>
-          </motion.div>
+            <span className="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden="true" />
+
+            <div className="flex items-center gap-1">
+              <a
+                href={PROFILE.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-white/[0.06] hover:text-ink"
+              >
+                <FaLinkedin aria-hidden="true" />
+              </a>
+              <a
+                href={PROFILE.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-white/[0.06] hover:text-ink"
+              >
+                <FaGithub aria-hidden="true" />
+              </a>
+            </div>
+          </m.div>
         </div>
 
-        <motion.div
+        {/* Portrait.
+            The source asset is already a circular composition on a light
+            backdrop, so a rectangular plate exposed the baked-in disc edge and
+            read as a broken crop. It stays a circle — but a monochrome one
+            inside a hairline ring, not the old rainbow blur, and at roughly
+            half the width so it no longer takes 45% of the hero for a photo. */}
+        <m.figure
           initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          style={prefersReducedMotion ? undefined : { y: portraitY, opacity: heroFade }}
-          className="relative mx-auto h-[260px] w-[260px] sm:h-[340px] sm:w-[340px]"
+          transition={{ duration: 1, delay: 0.3, ease: EASE }}
+          className="group relative mx-auto w-full max-w-[260px] lg:mx-0 lg:ml-auto"
         >
-          <motion.div
-            animate={prefersReducedMotion ? undefined : { y: [0, -8, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="relative h-full w-full"
-          >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500 via-fuchsia-500 to-orange-400 opacity-70 blur-2xl" />
-            <div className="relative h-full w-full overflow-hidden rounded-full border border-white/10 bg-black/70 p-3">
-              <img
-                src={profilePic}
-                alt="Portrait of Saksham Kanojia"
-                width="340"
-                height="340"
-                loading="eager"
-                decoding="async"
-                className="h-full w-full rounded-full object-cover"
-              />
-            </div>
-          </motion.div>
-        </motion.div>
+          <div className="relative aspect-square overflow-hidden rounded-full border border-line-strong">
+            <img
+              src={profilePic}
+              alt={`Portrait of ${PROFILE.name}`}
+              width="340"
+              height="340"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="h-full w-full scale-[1.02] object-cover grayscale transition-[filter] duration-700 ease-out group-hover:grayscale-0 motion-reduce:transition-none"
+            />
+          </div>
+
+          <figcaption className="mt-4 flex flex-col items-center gap-0.5 font-mono text-2xs text-ink-4 lg:items-end">
+            <span className="text-ink-2">{PROFILE.name}</span>
+            <span>{PROFILE.location}</span>
+          </figcaption>
+        </m.figure>
+
       </div>
 
-      <motion.blockquote
-        {...fadeUp(0.48, prefersReducedMotion)}
-        style={prefersReducedMotion ? undefined : { y: quoteY }}
-        className="relative mt-12 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-purple-500/10 via-fuchsia-500/5 to-orange-400/10 p-6 sm:p-8"
+      {/* Proof strip — the numbers, above the fold, where they earn their keep. */}
+      <m.dl
+        {...fade(0.8)}
+        className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line bg-line sm:grid-cols-4"
       >
-        <span
-          className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-purple-400 to-orange-400"
-          aria-hidden="true"
-        />
-        <p className="font-display text-lg font-semibold leading-snug text-white sm:text-2xl">
-          “{PROFILE.signatureLines[0]}”
-        </p>
-        <footer className="mt-3 text-xs uppercase tracking-[0.25em] text-white/45">
-          {PROFILE.signatureLines[1]}
-        </footer>
-      </motion.blockquote>
-
-      <motion.a
-        href="#about"
-        {...fadeUp(0.8, prefersReducedMotion)}
-        className="mt-10 hidden items-center justify-center gap-3 text-[11px] uppercase tracking-[0.3em] text-white/35 transition hover:text-orange-300 lg:flex"
-      >
-        Scroll
-        <motion.span
-          aria-hidden="true"
-          animate={prefersReducedMotion ? undefined : { y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="inline-block"
-        >
-          ↓
-        </motion.span>
-      </motion.a>
+        {PROOF.map((item) => (
+          <div key={item.label} className="group bg-bg p-5 transition-colors hover:bg-surface">
+            <dd className="font-display text-2xl font-semibold text-ink">
+              {item.count != null ? (
+                <Counter value={item.count} suffix={item.suffix} />
+              ) : (
+                item.value
+              )}
+            </dd>
+            <dt className="mt-1.5 text-sm font-medium text-ink-2">{item.label}</dt>
+            <p className="mt-1 text-xs leading-relaxed text-ink-4">{item.detail}</p>
+          </div>
+        ))}
+      </m.dl>
     </section>
   );
 };

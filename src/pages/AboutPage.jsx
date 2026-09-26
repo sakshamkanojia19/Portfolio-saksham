@@ -1,8 +1,8 @@
 import About from "../components/About";
-import AiPov from "../components/AiPov";
 import PageHeader from "../components/PageHeader";
-import { Separator } from "../components/ui/separator";
+import CtaBand from "../components/CtaBand";
 import useDocumentMeta from "../hooks/useDocumentMeta";
+import { EDUCATION, PROFILE } from "../constants";
 
 const AboutPage = () => {
   useDocumentMeta(
@@ -11,15 +11,19 @@ const AboutPage = () => {
   );
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-[var(--gap-section)]">
       <PageHeader
         eyebrow="About"
-        title="AI automation engineer focused on measurable outcomes."
-        subtitle="I design and deploy LLM-powered systems, intelligent workflows, and scalable services that reduce manual work and improve decision making."
+        title={["Engineer first.", "AI is how", "I get there."]}
+        lede="I design and deploy LLM-powered systems, intelligent workflows, and scalable services that reduce manual work and improve decision making — owning them from architecture through to the iteration after launch."
+        meta={`${PROFILE.location} · ${EDUCATION.degree}, ${EDUCATION.score}`}
       />
-      <About showHeading={false} />
-      <Separator />
-      <AiPov />
+
+      <About />
+      <CtaBand
+        title="Want the short version?"
+        body="The resume covers the timeline. This page covers the reasoning."
+      />
     </div>
   );
 };

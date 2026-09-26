@@ -1,4 +1,5 @@
 import Contact from "../components/Contact";
+import WorkWithMe from "../components/WorkWithMe";
 import PageHeader from "../components/PageHeader";
 import useDocumentMeta from "../hooks/useDocumentMeta";
 
@@ -9,13 +10,15 @@ const ContactPage = () => {
   );
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-[var(--gap-section)]">
       <PageHeader
         eyebrow="Contact"
-        title="Ready to ship AI automation that drives outcomes."
-        subtitle="Share your goals and I will respond with a clear plan."
+        title={["Tell me", "what's still", "manual."]}
+        lede="The most useful first message is the boring one: what the workflow is, how often it runs, and roughly how many hours it eats. I'll come back with a plan and a timeline."
       />
-      <Contact showHeading={false} />
+
+      <Contact />
+      <WorkWithMe />
     </div>
   );
 };

@@ -1,33 +1,54 @@
+import { useCallback, useRef } from "react";
 import { cn } from "../../lib/utils";
 
-const Card = ({ className, ...props }) => (
-  <div
+/**
+ * Flat, hairline-bordered surface. No coloured glow (eight of those in a grid
+ * used to bleed into one purple wash) and no hover-lift — depth now comes from
+ * the border and a single elevation token.
+ */
+const Card = ({ className, as: Tag = "div", ...props }) => (
+  <Tag
     className={cn(
-      "rounded-3xl border border-white/10 bg-black/60 p-6 shadow-[0_0_40px_rgba(168,85,247,0.12)] backdrop-blur transition-all duration-300 ease-out hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_0_50px_rgba(249,115,22,0.18)]",
+      "relative rounded-lg border border-line bg-surface/70 p-6 backdrop-blur-sm",
+      "edge-hover hover:border-line-strong",
       className
     )}
     {...props}
   />
 );
 
-const CardHeader = ({ className, ...props }) => (
-  <div className={cn("mb-4 space-y-2", className)} {...props} />
-);
+/**
+ * Card that tracks the pointer and paints a soft radial highlight under it.
+ * The gradient lives in CSS (`.spotlight`) and we only write two custom
+ * properties, so this never triggers a React render while the mouse moves.
+ * Falls back to a plain Card behaviour on touch — no pointer, no spotlight.
+ */
+const SpotlightCard = ({ className, as: Tag = "div", children, ...props }) => {
+  const ref = useRef(null);
 
-const CardTitle = ({ className, ...props }) => (
-  <h3 className={cn("text-xl font-semibold text-white", className)} {...props} />
-);
+  const onPointerMove = useCallback((event) => {
+    if (event.pointerType === "touch") return;
+    const node = ref.current;
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    node.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+    node.style.setProperty("--my", `${event.clientY - rect.top}px`);
+  }, []);
 
-const CardDescription = ({ className, ...props }) => (
-  <p className={cn("text-sm text-white/70", className)} {...props} />
-);
+  return (
+    <Tag
+      ref={ref}
+      onPointerMove={onPointerMove}
+      className={cn(
+        "spotlight relative overflow-hidden rounded-lg border border-line bg-surface/70 p-6 backdrop-blur-sm",
+        "edge-hover hover:border-line-strong",
+        className
+      )}
+      {...props}
+    >
+      <div className="relative z-10 flex h-full flex-col">{children}</div>
+    </Tag>
+  );
+};
 
-const CardContent = ({ className, ...props }) => (
-  <div className={cn("text-sm text-white/80", className)} {...props} />
-);
-
-const CardFooter = ({ className, ...props }) => (
-  <div className={cn("mt-6 flex items-center gap-3", className)} {...props} />
-);
-
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };
+export { Card, SpotlightCard };

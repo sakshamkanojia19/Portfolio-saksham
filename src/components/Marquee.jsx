@@ -1,53 +1,40 @@
-const items = [
-  "AI Agents",
-  "RAG Pipelines",
-  "LangChain",
-  "LangGraph",
-  "Pinecone",
-  "FastAPI",
-  "Node.js",
-  "React",
-  "n8n",
-  "OpenAI",
-  "Claude",
-  "Redis",
-  "WebSockets",
-  "Docker",
-  "CI/CD",
-];
+import { MARQUEE_ITEMS } from "../constants";
 
-const Row = ({ ariaHidden = false }) => (
-  <ul
-    aria-hidden={ariaHidden || undefined}
-    className="flex shrink-0 items-center gap-10 pr-10"
-  >
-    {items.map((item) => (
-      <li
+const Row = () => (
+  <div className="flex shrink-0 items-center gap-8 pr-8">
+    {MARQUEE_ITEMS.map((item) => (
+      <span
         key={item}
-        className="flex items-center gap-10 whitespace-nowrap font-display text-sm uppercase tracking-[0.25em] text-white/35"
+        className="flex items-center gap-8 whitespace-nowrap font-mono text-xs uppercase tracking-[0.14em] text-ink-4"
       >
         {item}
-        <span className="h-1 w-1 rounded-full bg-orange-400/60" aria-hidden="true" />
-      </li>
+        <span className="h-[3px] w-[3px] rounded-full bg-accent/50" aria-hidden="true" />
+      </span>
     ))}
-  </ul>
+  </div>
 );
 
 /**
- * Infinite tech ticker between hero and content. Pure CSS animation (two
- * copies, translate −50%), paused entirely under prefers-reduced-motion.
+ * Tech ticker. Entirely decorative, so the whole strip is aria-hidden — the
+ * old version exposed a 15-item <ul> of stack names to screen readers, which
+ * is 15 list items of noise between the hero and the first real section. The
+ * same information is available properly on /skills.
+ *
+ * The edge masks fade to --bg rather than a hard-coded black; the old ones
+ * used `from-black` against a #050505 page and showed as visible dark bars.
  */
-const Marquee = () => {
-  return (
-    <div className="relative -mx-5 overflow-hidden border-y border-white/5 py-4 sm:-mx-8 lg:-mx-10">
-      <div className="absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-black to-transparent" aria-hidden="true" />
-      <div className="absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-black to-transparent" aria-hidden="true" />
-      <div className="animate-marquee flex w-max motion-reduce:animate-none">
-        <Row />
-        <Row ariaHidden />
-      </div>
+const Marquee = () => (
+  <div
+    aria-hidden="true"
+    className="relative -mx-5 overflow-hidden border-y border-line py-3.5 sm:-mx-8"
+  >
+    <div className="absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-bg to-transparent" />
+    <div className="absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-bg to-transparent" />
+    <div className="animate-marquee flex w-max motion-reduce:animate-none">
+      <Row />
+      <Row />
     </div>
-  );
-};
+  </div>
+);
 
 export default Marquee;

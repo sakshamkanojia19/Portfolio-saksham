@@ -1,25 +1,28 @@
 import AiPov from "../components/AiPov";
-import Writing from "../components/Writing";
 import PageHeader from "../components/PageHeader";
-import { Separator } from "../components/ui/separator";
+import CtaBand from "../components/CtaBand";
 import useDocumentMeta from "../hooks/useDocumentMeta";
 
 const AiPovPage = () => {
   useDocumentMeta(
     "AI POV — Saksham Kanojia",
-    "How Saksham Kanojia thinks about building AI: permission-aware retrieval, AI-native architecture, graceful degradation, and cost as a feature."
+    "Permissions before generation, AI-native architecture, graceful degradation, and why reliability and cost are features."
   );
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-[var(--gap-section)]">
       <PageHeader
         eyebrow="AI POV"
-        title="How I think about building AI."
-        subtitle="Opinions earned from shipping LLM systems that had to hold up in production — under real permissions, real latency, and a real budget."
+        title={["Opinions,", "held for", "reasons."]}
+        lede="Four principles I keep returning to when a system has to survive real users, real permissions, and a real budget. Each one below is an argument, not a slogan — and the first is demonstrated rather than described."
+        meta="4 principles · ~4 min read"
       />
-      <AiPov showHeading={false} />
-      <Separator />
-      <Writing />
+
+      <AiPov />
+      <CtaBand
+        title="Disagree with any of this?"
+        body="Genuinely — I'd like to hear it. The retrieval-design arguments are the fun ones."
+      />
     </div>
   );
 };

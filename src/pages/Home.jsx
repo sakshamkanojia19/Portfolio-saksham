@@ -1,32 +1,22 @@
+import { Link } from "react-router-dom";
+import { FiArrowRight } from "react-icons/fi";
 import Hero from "../components/Hero";
 import Marquee from "../components/Marquee";
-import About from "../components/About";
-import AiPov from "../components/AiPov";
-import Technologies from "../components/Technologies";
+import Statement from "../components/Statement";
+import HomeEntries from "../components/HomeEntries";
 import Projects from "../components/Projects";
-import CurrentlyExploring from "../components/CurrentlyExploring";
-import Experience from "../components/Experience";
-import Writing from "../components/Writing";
 import WorkWithMe from "../components/WorkWithMe";
-import Contact from "../components/Contact";
-import { Separator } from "../components/ui/separator";
+import CtaBand from "../components/CtaBand";
+import SectionHeading from "../components/SectionHeading";
+import Reveal from "../components/Reveal";
 import useDocumentMeta from "../hooks/useDocumentMeta";
 
-// Each section owns its own scroll-reveal at the card level — deliberately not
-// wrapped in an outer reveal here, so a tall section never fades in as one
-// giant block (and never sits invisible if its threshold isn't met).
-const sections = [
-  { id: "about", Component: About },
-  { id: "ai-pov", Component: AiPov },
-  { id: "skills", Component: Technologies },
-  { id: "projects", Component: Projects },
-  { id: "exploring", Component: CurrentlyExploring },
-  { id: "experience", Component: Experience },
-  { id: "writing", Component: Writing },
-  { id: "work-with-me", Component: WorkWithMe },
-  { id: "contact", Component: Contact },
-];
-
+/**
+ * The home page summarises and routes. It deliberately does NOT render the
+ * full About / Skills / Experience / Exploring / Contact sections any more —
+ * doing so made every navigation item a duplicate of something the visitor
+ * had already scrolled past.
+ */
 const Home = () => {
   useDocumentMeta(
     "Saksham Kanojia — AI Automation Engineer & Full-Stack Developer",
@@ -34,22 +24,38 @@ const Home = () => {
   );
 
   return (
-    <div className="space-y-16 sm:space-y-20">
+    <div className="space-y-[var(--gap-section)]">
       <Hero />
       <Marquee />
-      {sections.map(({ id, Component }, index) => (
-        <div key={id} id={id} className="relative scroll-mt-24 space-y-16 sm:space-y-20">
-          {index > 0 && <Separator />}
-          {/* Oversized ghost index — outlined editorial marker, not content. */}
-          <span
-            aria-hidden="true"
-            className="ghost-number pointer-events-none absolute -top-6 right-0 select-none font-display text-[5rem] font-bold leading-none sm:text-[8rem]"
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <Component />
+      <Statement />
+      <HomeEntries />
+
+      <div className="space-y-[var(--gap-block)]">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <SectionHeading
+            eyebrow="Selected work"
+            title="Systems that went to production."
+            lede="Three builds, each solving a problem that used to be someone's manual afternoon."
+          />
+          <Reveal>
+            <Link
+              to="/projects"
+              className="group inline-flex items-center gap-2 whitespace-nowrap text-sm font-medium text-ink-2 transition-colors hover:text-accent"
+            >
+              All case studies
+              <FiArrowRight
+                className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+                aria-hidden="true"
+              />
+            </Link>
+          </Reveal>
         </div>
-      ))}
+
+        <Projects showHeading={false} variant="compact" />
+      </div>
+
+      <WorkWithMe />
+      <CtaBand />
     </div>
   );
 };

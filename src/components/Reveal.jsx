@@ -1,67 +1,67 @@
-import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
+import useMediaQuery from "../hooks/useMediaQuery";
 
-const MOBILE_QUERY = "(max-width: 768px)";
-
-// Resolved during the very first render. If the animated branch renders even
-// once before we know it's a small screen, framer-motion latches the initial
-// opacity:0 and — because the element reconciles as an update rather than a
-// remount — never animates back out, leaving the card permanently invisible.
-const matchesMobile = () =>
-  typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches;
+// One shared transition for the entire site. Previously every component
+// invented its own duration/easing, so nothing felt like it belonged together.
+export const EASE = [0.16, 1, 0.3, 1];
+export const REVEAL_DURATION = 0.7;
 
 /**
- * Scroll-reveal wrapper. By default elements come AND go — they animate in
- * when scrolled into view and fade back out when they leave, so the page feels
- * alive in both scroll directions. Pass `once` to keep an element after its
- * first reveal (forms, anything with focusable state).
+ * Scroll reveal.
  *
- * `x` slides in horizontally instead of vertically — used for the asymmetric
- * left/right entrances. Renders content immediately when the user prefers
- * reduced motion or is on a small screen.
+ * Two deliberate corrections to the old behaviour:
+ *
+ * 1. Mobile is no longer opted out entirely. It previously rendered a
+ *    completely static page — the polish only existed for desktop, which is
+ *    backwards for a portfolio most people open on a phone. Small screens now
+ *    get a cheaper version (shorter travel, no stagger) instead of nothing.
+ *
+ * 2. Reveals fire ONCE. The old default re-ran in both directions, so
+ *    scrolling back up made content fade out as you moved toward it — which
+ *    reads as a rendering bug, not as polish.
  */
 const Reveal = ({
   children,
   delay = 0,
-  y = 24,
+  y = 20,
   x = 0,
-  once = false,
+  blur = false,
   className,
   as = "div",
+  amount = 0.2,
 }) => {
   const prefersReducedMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(matchesMobile);
+  const isCompact = useMediaQuery("(max-width: 768px)");
 
-  useEffect(() => {
-    const media = window.matchMedia(MOBILE_QUERY);
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
+  const Tag = m[as] ?? m.div;
 
-  const disabled = prefersReducedMotion || isMobile;
-  const MotionTag = motion[as] ?? motion.div;
+  if (prefersReducedMotion) {
+    const Static = as;
+    return <Static className={className}>{children}</Static>;
+  }
 
-  const from = x !== 0 ? { opacity: 0, x } : { opacity: 0, y };
-  const to = x !== 0 ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 };
-
-  // The disabled branch animates explicitly to the visible state rather than
-  // simply omitting the motion props, so a mid-life switch can never strand the
-  // element at opacity 0.
-  const motionProps = disabled
-    ? { initial: false, animate: to }
-    : {
-        initial: from,
-        whileInView: to,
-        viewport: { once, amount: 0.15, margin: "0px 0px -5% 0px" },
-        transition: { duration: 0.55, delay, ease: "easeOut" },
-      };
+  const travel = isCompact ? Math.min(y, 12) : y;
+  const shift = isCompact ? 0 : x;
 
   return (
-    <MotionTag className={className} {...motionProps}>
+    <Tag
+      className={className}
+      initial={{
+        opacity: 0,
+        y: shift === 0 ? travel : 0,
+        x: shift,
+        filter: blur && !isCompact ? "blur(6px)" : "blur(0px)",
+      }}
+      whileInView={{ opacity: 1, y: 0, x: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, amount, margin: "0px 0px -8% 0px" }}
+      transition={{
+        duration: isCompact ? 0.45 : REVEAL_DURATION,
+        delay: isCompact ? 0 : delay,
+        ease: EASE,
+      }}
+    >
       {children}
-    </MotionTag>
+    </Tag>
   );
 };
 

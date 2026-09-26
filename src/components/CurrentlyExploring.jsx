@@ -1,83 +1,74 @@
 import { CURRENTLY_EXPLORING, PERSONAL } from "../constants";
-import { Card } from "./ui/card";
+import { SpotlightCard } from "./ui/card";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
-const CurrentlyExploring = ({ showHeading = true }) => {
+/**
+ * Each item now says *why* it's worth the time, which is the difference
+ * between a reading list and a point of view. The six synchronised pulsing
+ * dots are gone — six things blinking at once was noise, not life.
+ */
+const CurrentlyExploring = ({ showHeading = false }) => {
   const { intro, items, humanNote } = CURRENTLY_EXPLORING;
 
   return (
     <section
       aria-labelledby={showHeading ? "exploring-heading" : undefined}
-      aria-label={showHeading ? undefined : "Currently exploring"}
-      className="space-y-8"
+      className="space-y-[var(--gap-block)]"
     >
       {showHeading && (
         <SectionHeading
           id="exploring-heading"
           eyebrow="Currently Exploring"
-          accent="purple"
           title="Learning in public."
           lede={intro}
         />
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2">
         {items.map((item, index) => (
-          <Reveal key={item.title} delay={index * 0.05}>
-            <Card className="h-full space-y-2 p-5">
-              <div className="flex items-center gap-2">
-                <span
-                  className="h-1.5 w-1.5 animate-pulse rounded-full bg-purple-400 motion-reduce:animate-none"
-                  aria-hidden="true"
-                />
-                <h3 className="font-display text-sm text-white sm:text-base">
-                  {item.title}
-                </h3>
+          <Reveal key={item.title} delay={index * 0.04} className="h-full">
+            <SpotlightCard className="h-full p-6">
+              <div className="flex items-baseline gap-3">
+                <span className="index-num text-base font-semibold" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3 className="font-display text-base text-ink">{item.title}</h3>
               </div>
-              <p className="text-xs leading-relaxed text-white/60 sm:text-sm">
-                {item.detail}
-              </p>
-            </Card>
+
+              <p className="mt-2 font-mono text-2xs text-ink-4">{item.detail}</p>
+
+              {item.why && (
+                <p className="mt-4 text-sm leading-relaxed text-ink-2">{item.why}</p>
+              )}
+            </SpotlightCard>
           </Reveal>
         ))}
       </div>
 
       <Reveal>
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-purple-500/10 via-transparent to-orange-400/10 p-6 sm:p-8">
-          <p className="max-w-3xl text-sm leading-relaxed text-white/75 sm:text-base">
+        <div className="grid gap-8 border-t border-line pt-8 sm:grid-cols-[1fr_auto] sm:gap-16">
+          <p className="max-w-measure text-base leading-relaxed text-ink-2">
             {humanNote}
           </p>
-
-          {(PERSONAL.beyondCode || PERSONAL.funFact) && (
-            <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-              {PERSONAL.beyondCode && (
-                <div>
-                  <dt className="text-[11px] uppercase tracking-[0.2em] text-orange-300">
-                    Beyond code
-                  </dt>
-                  <dd className="mt-1 text-sm text-white/70">
-                    {PERSONAL.beyondCode}
-                  </dd>
-                </div>
-              )}
-              {PERSONAL.funFact && (
-                <div>
-                  <dt className="text-[11px] uppercase tracking-[0.2em] text-purple-300">
-                    Fun fact
-                  </dt>
-                  <dd className="mt-1 text-sm text-white/70">
-                    {PERSONAL.funFact}
-                  </dd>
-                </div>
-              )}
-            </dl>
-          )}
-          {/*
-            TODO(saksham): fill PERSONAL.beyondCode and PERSONAL.funFact in
-            src/constants/index.js — this block renders automatically once they
-            are non-empty, and stays hidden until then.
-          */}
+          <dl className="space-y-5 sm:w-[18rem]">
+            <div>
+              <dt className="font-mono text-2xs uppercase tracking-[0.12em] text-ink-4">
+                Beyond code
+              </dt>
+              <dd className="mt-2 text-sm leading-relaxed text-ink-2">
+                {PERSONAL.beyondCode}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-2xs uppercase tracking-[0.12em] text-ink-4">
+                Current obsession
+              </dt>
+              <dd className="mt-2 text-sm leading-relaxed text-ink-2">
+                {PERSONAL.funFact}
+              </dd>
+            </div>
+          </dl>
         </div>
       </Reveal>
     </section>

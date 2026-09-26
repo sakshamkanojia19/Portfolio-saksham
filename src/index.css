@@ -1,111 +1,272 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================================================
+   TOKENS — the single source of truth for the whole site.
+   Monochrome ink scale on a neutral black, plus exactly one accent.
+   Every alpha below was checked against --bg for WCAG contrast; the ratio
+   is noted so nobody silently lowers one into failing territory.
+   ===================================================================== */
 :root {
   color-scheme: dark;
-  font-family: "Sora", sans-serif;
-  background-color: #050505;
+
+  --bg: #0a0a0a;
+  --surface: #101010;
+  --surface-2: #161616;
+
+  /* Contrast ratios below are measured against --bg in the rendered page,
+     not estimated. Every step passes WCAG AA for small text (4.5:1), because
+     the ink-4 step IS used for real content — stat-rail labels, figure
+     captions, timestamps — and not only for decoration. Lower any of these
+     and that text starts failing. */
+  --ink-1: #ffffff;                    /* 19.9:1 — headings               */
+  --ink-2: rgba(255, 255, 255, 0.72);  /* 10.3:1 — body copy              */
+  --ink-3: rgba(255, 255, 255, 0.56);  /*  6.5:1 — secondary text         */
+  --ink-4: rgba(255, 255, 255, 0.48);  /*  5.0:1 — labels, captions, meta */
+
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.2);
+
+  --accent: #ff8a3d;             /* 8.1:1 on --bg, and black on it is 8.1:1 */
+  --accent-soft: rgba(255, 138, 61, 0.14);
+  --accent-ink: #0a0a0a;
+
+  --danger: #ff5a5a;             /* errors are red. Never the accent.      */
+  --ok: #4ade80;
+
+  /* Fluid type — no breakpoint jumps anywhere on the site. */
+  --fs-2xs: clamp(0.6875rem, 0.67rem + 0.09vw, 0.75rem);
+  --fs-xs: clamp(0.75rem, 0.73rem + 0.12vw, 0.8125rem);
+  --fs-sm: clamp(0.8125rem, 0.79rem + 0.16vw, 0.9375rem);
+  --fs-base: clamp(0.9375rem, 0.9rem + 0.24vw, 1.0625rem);
+  --fs-lg: clamp(1.0625rem, 0.99rem + 0.36vw, 1.3125rem);
+  --fs-xl: clamp(1.25rem, 1.09rem + 0.72vw, 1.75rem);
+  --fs-2xl: clamp(1.625rem, 1.32rem + 1.35vw, 2.5rem);
+  --fs-3xl: clamp(2.125rem, 1.55rem + 2.6vw, 3.75rem);
+  --fs-4xl: clamp(2.5rem, 1.6rem + 4.1vw, 5.25rem);
+
+  /* Radii — small things get small corners. */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  /* Elevation replaces the old coloured glow entirely. */
+  --e1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --e2: 0 4px 24px -6px rgba(0, 0, 0, 0.7);
+  --e3: 0 24px 64px -20px rgba(0, 0, 0, 0.85);
+
+  --header-h: 76px;
+
+  --shell: 1100px;
+  --shell-wide: 1320px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Vertical rhythm — one scale, used everywhere. */
+  --gap-section: clamp(3.5rem, 2.4rem + 4.5vw, 6.5rem);
+  --gap-block: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+}
+
+* {
+  border-color: var(--line);
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #050505;
-  color: #f5f5f5;
+  background-color: var(--bg);
+  color: var(--ink-2);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--fs-base);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-.font-display {
-  font-family: "Space Grotesk", sans-serif;
-}
-
-.glow {
-  box-shadow: 0 0 60px rgba(168, 85, 247, 0.35);
-}
-
-.section-title {
-  letter-spacing: -0.02em;
+h1, h2, h3, h4 {
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink-1);
+  letter-spacing: -0.03em;
   text-wrap: balance;
+  font-weight: 600;
 }
 
 ::selection {
-  background: rgba(249, 115, 22, 0.5);
-  color: #050505;
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 
-/* Visible, consistent keyboard focus on every interactive element. */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-  outline: 2px solid rgba(251, 146, 60, 0.9);
+/* ========================================================================
+   FOCUS — deliberately NOT the accent, so keyboard focus can never be
+   confused with the hover state (which is amber everywhere).
+   ===================================================================== */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--ink-1);
   outline-offset: 3px;
-  border-radius: 0.5rem;
+  border-radius: var(--r-sm);
 }
 
-/* Skip link — visible only once focused. */
 .skip-link {
-  position: absolute;
+  position: fixed;
   left: 1rem;
-  top: -100%;
-  z-index: 100;
-  border-radius: 9999px;
-  background: #f97316;
-  color: #050505;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+  top: -6rem;
+  z-index: 200;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0.625rem 1.25rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
-  transition: top 0.2s ease-out;
+  transition: top 0.2s var(--ease-out);
 }
 
 .skip-link:focus {
   top: 1rem;
 }
 
-/* Oversized section index numbers — outlined, clearly intentional. */
-.ghost-number {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(168, 85, 247, 0.28);
-  text-shadow: 0 0 40px rgba(168, 85, 247, 0.12);
+/* ========================================================================
+   UTILITIES
+   ===================================================================== */
+
+/* Site-wide cursor light. Sits ABOVE page content (below the header and any
+   overlay) and blends with `screen`, so the warmth is visible over cards and
+   in the side gutters rather than only inside one section's own box.
+   Starts invisible and is revealed by the first real pointer move. */
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    560px circle at var(--cx, -100%) var(--cy, -100%),
+    rgba(255, 146, 72, 0.2),
+    rgba(255, 138, 61, 0.075) 40%,
+    transparent 70%
+  );
 }
 
-/* Film grain — tiny SVG turbulence tile, almost subliminal. */
-.grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity: 0.05;
-  mix-blend-mode: overlay;
+/* No cursor to follow, and the blend layer is pure cost on a phone. */
+@media (pointer: coarse) {
+  .cursor-glow { display: none; }
+}
+
+/* Mouse-tracked spotlight. --mx/--my are written by SpotlightCard; the
+   gradient is inert until the pointer enters, so a static grid stays flat. */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
+  background: radial-gradient(
+    360px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.07),
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+.spotlight:hover::before,
+.spotlight:focus-within::before {
+  opacity: 1;
+}
+
+/* Hairline that brightens on hover — replaces the old lift-everything hover. */
+.edge-hover {
+  transition: border-color 0.3s var(--ease-out), background-color 0.3s var(--ease-out);
+}
+
+/* Optical alignment for the mono eyebrows. */
+.eyebrow {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.eyebrow > .tok {
+  color: var(--ink-4);
+}
+
+/* Section index numerals. Sit BEHIND content in their own grid cell now —
+   never overlapping a heading the way the old absolute version did. */
+.index-num {
+  font-family: "Space Grotesk", sans-serif;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+  line-height: 1;
+}
+
+/* Film grain — keeps large black areas from reading as a dead flat void. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Text that reveals per-line behind a mask (hero + page titles). */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
 }
 
 @keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .animate-marquee {
-  animation: marquee 32s linear infinite;
+  animation: marquee 44s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Custom scrollbar — small thing, but a default grey bar undoes the palette. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  border: 3px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.24); }
+
+/* ========================================================================
+   Forced colours — the old gradient-clipped headline vanished entirely in
+   Windows high-contrast mode. Everything here degrades to real text.
+   ===================================================================== */
+@media (forced-colors: active) {
+  .index-num { -webkit-text-stroke: 0; color: CanvasText; }
+  .spotlight::before, .grain::after, .cursor-glow { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  html { scroll-behavior: auto; }
 
-  *,
-  *::before,
-  *::after {
+  .cursor-glow { display: none; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

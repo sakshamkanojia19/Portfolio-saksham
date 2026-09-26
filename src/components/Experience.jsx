@@ -1,146 +1,132 @@
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { m, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { CERTIFICATIONS, EDUCATION, EXPERIENCES } from "../constants";
 import { Badge } from "./ui/badge";
-import { Card } from "./ui/card";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
-const Experience = ({ showHeading = true }) => {
+const Experience = ({ showHeading = false }) => {
   const prefersReducedMotion = useReducedMotion();
   const timelineRef = useRef(null);
 
-  // The gradient line draws itself downward as the timeline scrolls through
-  // the viewport — the "current position" follows the reader.
   const { scrollYProgress } = useScroll({
     target: timelineRef,
-    offset: ["start 75%", "end 55%"],
+    offset: ["start 75%", "end 60%"],
   });
-  const lineScale = useSpring(scrollYProgress, { stiffness: 90, damping: 25 });
+  const lineScale = useSpring(scrollYProgress, { stiffness: 90, damping: 26 });
 
   return (
     <section
       aria-labelledby={showHeading ? "experience-heading" : undefined}
-      aria-label={showHeading ? undefined : "Experience"}
-      className="space-y-8"
+      className="space-y-[var(--gap-block)]"
     >
       {showHeading && (
         <SectionHeading
           id="experience-heading"
           eyebrow="Experience"
-          accent="purple"
           title="Roles delivering AI automation and scalable systems."
         />
       )}
 
       <div ref={timelineRef} className="relative">
-        <span
-          className="absolute bottom-0 left-0 top-0 w-px bg-white/10"
-          aria-hidden="true"
-        />
-        <motion.span
+        <span className="absolute bottom-0 left-0 top-0 w-px bg-line" aria-hidden="true" />
+        <m.span
           style={{ scaleY: prefersReducedMotion ? 1 : lineScale }}
-          className="absolute bottom-0 left-0 top-0 w-px origin-top bg-gradient-to-b from-purple-400 via-fuchsia-400 to-orange-400"
+          className="absolute bottom-0 left-0 top-0 w-px origin-top bg-accent"
           aria-hidden="true"
         />
 
-        <ol className="space-y-5 pl-5 sm:pl-8">
-        {EXPERIENCES.map((experience, index) => (
-          <li key={`${experience.company}-${experience.role}`} className="relative">
-            <motion.span
-              initial={prefersReducedMotion ? false : { scale: 0, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true, amount: 1 }}
-              transition={{ duration: 0.35, ease: "backOut" }}
-              className={`absolute -left-[25px] top-6 h-2.5 w-2.5 rounded-full ring-4 ring-black sm:-left-[37px] ${
-                experience.current
-                  ? "bg-orange-400 shadow-[0_0_12px_rgba(251,146,60,0.8)]"
-                  : "bg-purple-400"
-              }`}
-              aria-hidden="true"
-            />
-            <Reveal delay={index * 0.06}>
-              <Card className="space-y-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <h3 className="font-display text-lg text-white sm:text-xl">
-                      {experience.role}
-                    </h3>
-                    <p className="text-sm text-white/55">{experience.company}</p>
+        <ol className="space-y-12 pl-6 sm:pl-10">
+          {EXPERIENCES.map((experience, index) => (
+            <li key={`${experience.company}-${experience.role}`} className="relative">
+              {/* The ring matches the real page background. The old `ring-black`
+                  sat on a #050505 page and gave every dot a dark halo. */}
+              <span
+                className={`absolute top-2 h-2 w-2 rounded-full ring-4 ring-bg ${
+                  experience.current ? "bg-accent" : "bg-white/30"
+                } -left-[29px] sm:-left-[45px]`}
+                aria-hidden="true"
+              />
+
+              <Reveal delay={index * 0.05}>
+                <article>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 className="font-display text-lg text-ink">{experience.role}</h3>
+                    {experience.current && <Badge variant="accent">Current</Badge>}
                   </div>
-                  <div className="flex items-center gap-2">
-                    {experience.current && (
-                      <Badge variant="orange">Current</Badge>
-                    )}
-                    <span className="text-xs text-white/45 sm:text-sm">
+
+                  <p className="mt-1.5 text-sm text-ink-2">
+                    {experience.company}
+                    <span className="mx-2 text-ink-4" aria-hidden="true">
+                      ·
+                    </span>
+                    <span className="font-mono text-xs text-ink-3">
                       {experience.year}
                     </span>
-                  </div>
-                </div>
+                  </p>
 
-                <ul className="space-y-2.5">
-                  {experience.points.map((point) => (
-                    <li
-                      key={point}
-                      className="flex items-start gap-3 text-sm leading-relaxed text-white/70"
-                    >
-                      <span
-                        className="mt-2 h-1 w-1 shrink-0 rounded-full bg-orange-400"
-                        aria-hidden="true"
-                      />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
+                  {experience.summary && (
+                    <p className="mt-4 max-w-measure text-base leading-relaxed text-ink-2">
+                      {experience.summary}
+                    </p>
+                  )}
 
-                <ul className="flex flex-wrap gap-2">
-                  {experience.technologies.map((tech) => (
-                    <li key={tech}>
-                      <Badge>{tech}</Badge>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            </Reveal>
-          </li>
-        ))}
+                  <ul className="mt-5 space-y-2.5">
+                    {experience.points.map((point) => (
+                      <li
+                        key={point}
+                        className="flex max-w-measure items-start gap-3 text-sm leading-relaxed text-ink-3"
+                      >
+                        <span
+                          className="mt-[9px] h-px w-3 shrink-0 bg-accent/60"
+                          aria-hidden="true"
+                        />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <ul className="mt-5 flex flex-wrap gap-1.5">
+                    {experience.technologies.map((tech) => (
+                      <li key={tech}>
+                        <Badge>{tech}</Badge>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </Reveal>
+            </li>
+          ))}
         </ol>
       </div>
 
       <Reveal>
-        <Card className="grid gap-6 sm:grid-cols-2">
-          <div className="space-y-2">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-purple-300">
+        <div className="grid gap-10 border-t border-line pt-8 sm:grid-cols-2">
+          <div>
+            <h3 className="font-mono text-2xs uppercase tracking-[0.12em] text-ink-4">
               Education
-            </p>
-            <h3 className="font-display text-base text-white sm:text-lg">
-              {EDUCATION.degree}
             </h3>
-            <p className="text-sm text-white/65">{EDUCATION.institution}</p>
-            <p className="text-xs text-white/45">
+            <p className="mt-3 font-display text-base text-ink">{EDUCATION.degree}</p>
+            <p className="mt-1 text-sm text-ink-2">{EDUCATION.institution}</p>
+            <p className="mt-1 font-mono text-xs text-ink-4">
               {EDUCATION.period} · {EDUCATION.score}
             </p>
           </div>
-          <div className="space-y-3">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-orange-300">
+
+          <div>
+            <h3 className="font-mono text-2xs uppercase tracking-[0.12em] text-ink-4">
               Certifications
-            </p>
-            <ul className="space-y-2">
+            </h3>
+            <ul className="mt-3 space-y-3">
               {CERTIFICATIONS.map((cert) => (
-                <li
-                  key={cert}
-                  className="flex items-start gap-3 text-sm text-white/70"
-                >
-                  <span
-                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-purple-400"
-                    aria-hidden="true"
-                  />
-                  <span>{cert}</span>
+                <li key={cert.name}>
+                  <p className="text-sm text-ink">{cert.name}</p>
+                  <p className="font-mono text-xs text-ink-4">{cert.issuer}</p>
                 </li>
               ))}
             </ul>
           </div>
-        </Card>
+        </div>
       </Reveal>
     </section>
   );

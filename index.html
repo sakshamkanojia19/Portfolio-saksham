@@ -3,12 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#050505" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark" />
 
     <link rel="icon" type="image/png" href="/SK9.png" />
     <link rel="apple-touch-icon" href="/SK9.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- The display face renders the largest text on the page, so the stylesheet
+         is preloaded rather than discovered once the CSS has already parsed. -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
 
     <title>Saksham Kanojia — AI Automation Engineer & Full-Stack Developer</title>
     <meta
@@ -20,13 +29,14 @@
       content="AI Automation Engineer, Generative AI, LLM, RAG, LangChain, FastAPI, React, Full-Stack Developer, Saksham Kanojia"
     />
     <meta name="author" content="Saksham Kanojia" />
+    <!-- Updated per route by useDocumentMeta so sub-pages no longer all claim
+         to be the homepage. -->
     <link rel="canonical" href="https://saksham-kanojia.vercel.app/" />
 
-    <!-- TODO(saksham): replace SK9.png with a 1200x630 OG preview image for
-         richer link cards on LinkedIn/Twitter. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Saksham Kanojia" />
     <meta property="og:url" content="https://saksham-kanojia.vercel.app/" />
+    <meta property="og:locale" content="en_US" />
     <meta
       property="og:title"
       content="Saksham Kanojia — AI Automation Engineer & Full-Stack Developer"
@@ -35,8 +45,13 @@
       property="og:description"
       content="I build AI-native products and automation systems with LLMs, RAG pipelines, and scalable SaaS that deliver measurable impact."
     />
-    <meta property="og:image" content="https://saksham-kanojia.vercel.app/SK9.png" />
-    <meta property="og:image:alt" content="Saksham Kanojia — AI Automation Engineer" />
+    <meta property="og:image" content="https://saksham-kanojia.vercel.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Saksham Kanojia — I build AI systems that replace operational work."
+    />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta
@@ -47,7 +62,47 @@
       name="twitter:description"
       content="I build AI-native products and automation systems with LLMs, RAG pipelines, and scalable SaaS that deliver measurable impact."
     />
-    <meta name="twitter:image" content="https://saksham-kanojia.vercel.app/SK9.png" />
+    <meta name="twitter:image" content="https://saksham-kanojia.vercel.app/og.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Saksham Kanojia",
+        "url": "https://saksham-kanojia.vercel.app/",
+        "image": "https://saksham-kanojia.vercel.app/og.png",
+        "jobTitle": "AI Automation Engineer",
+        "description": "AI Automation Engineer building production LLM agents, RAG pipelines, and AI-native SaaS products from 0 to 1.",
+        "email": "mailto:sakshamkanojia2002@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Delhi",
+          "addressCountry": "IN"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Maharaja Surajmal Institute of Technology, New Delhi"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Digital Web Solutions"
+        },
+        "knowsAbout": [
+          "Large Language Models",
+          "Retrieval-Augmented Generation",
+          "LangChain",
+          "LangGraph",
+          "AI Agents",
+          "FastAPI",
+          "React",
+          "System Design"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/saksham-kanojia-7895b7217/",
+          "https://github.com/sakshamkanojia19"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
