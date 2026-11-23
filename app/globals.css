@@ -1902,6 +1902,249 @@ select {
     display: block;
   }
 }
+.publication-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 18px;
+  margin-bottom: 32px;
+  align-items: center;
+}
+.publication-tabs a,
+.publication-tabs button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  padding: 9px 14px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+.publication-tabs [aria-current="page"],
+.publication-tabs [aria-pressed="true"] {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--accent);
+}
+.publication-tabs .author-entry {
+  margin-left: auto;
+  font-size: 0.85rem;
+}
+.posts-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.4fr) minmax(220px, 1fr);
+  gap: 42px;
+  padding-bottom: 70px;
+}
+.posts-aside {
+  align-self: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 25px;
+  background: var(--surface);
+}
+.posts-aside h2,
+.posts-aside h3 {
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+.posts-aside p {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+.posts-aside hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 26px 0;
+}
+.note-card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 28px;
+  background: var(--surface);
+  margin-bottom: 22px;
+  min-width: 0;
+}
+.note-author,
+.composer-identity {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.note-author img,
+.composer-identity img {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 44px;
+  height: 44px;
+}
+.note-author > div,
+.composer-identity > div {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+}
+.note-author > div > span,
+.composer-identity > div > span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.note-format {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.note-card .prose {
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+.note-card .prose p {
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+.note-card .tags {
+  margin: 20px 0;
+}
+.note-card .article-actions {
+  margin-top: 20px;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.note-card .status-message:empty {
+  display: none;
+}
+.note-permalink {
+  margin-top: 15px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.post-detail {
+  max-width: 800px;
+}
+.post-detail-title {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  overflow-wrap: anywhere;
+}
+.feed-pagination {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+.quick-composer {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 30px;
+  background: var(--surface);
+  min-width: 0;
+}
+.quick-composer textarea {
+  font-size: 1.1rem;
+  min-height: 180px;
+  background: transparent;
+  line-height: 1.8;
+}
+.composer-tools {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 15px 0 24px;
+}
+.desk-title {
+  font-size: 1.6rem;
+  margin: 30px 0;
+}
+.setup-notice {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+.subscribe-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 45px;
+  padding: 15px 0 85px;
+}
+.feed-subscribe {
+  align-self: start;
+  padding: 25px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-width: 0;
+}
+.feed-subscribe input {
+  font-size: 0.8rem;
+}
+.feed-subscribe p {
+  font-size: 0.85rem;
+}
+.profile-answers {
+  border-top: 1px solid var(--line);
+}
+.profile-answers dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px 50px;
+  margin-top: 35px;
+}
+.profile-answers dt {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.profile-answers dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.profile-answers a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (max-width: 760px) {
+  .posts-layout,
+  .subscribe-layout {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .publication-tabs .author-entry {
+    margin-left: 0;
+  }
+  .publication-tabs a,
+  .publication-tabs button {
+    font-size: 0.85rem;
+    padding: 8px 11px;
+  }
+  .note-card,
+  .quick-composer {
+    padding: 20px;
+  }
+  .note-format {
+    display: none;
+  }
+  .note-author > div > span,
+  .composer-identity > div > span {
+    font-size: 0.75rem;
+  }
+  .note-card .article-actions {
+    gap: 8px;
+  }
+  .note-card .button,
+  .note-card .vote-button {
+    font-size: 0.8rem;
+    padding: 10px 12px;
+  }
+  .profile-answers dl {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

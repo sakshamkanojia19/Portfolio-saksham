@@ -19,6 +19,7 @@ export const metadata = {
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },
+  robots: { maxImagePreview: "large", maxSnippet: -1, maxVideoPreview: -1 },
   icons: { icon: "/SK9.png", apple: "/SK9.png" },
 };
 export const viewport = {
@@ -43,6 +44,22 @@ export default function RootLayout({ children }) {
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLd({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": `${siteUrl}/#website`,
+              url: siteUrl,
+              name: "Saksham Kanojia",
+              description:
+                "AI engineering projects, short posts, and technical articles by Saksham Kanojia.",
+              publisher: { "@id": `${siteUrl}/#person` },
+              inLanguage: "en",
+            }),
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

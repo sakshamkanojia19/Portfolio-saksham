@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { postPath } from "../../../lib/publication.mjs";
 import { getPost, getPosts } from "../../../lib/posts";
 import { sessionDb } from "../../../lib/supabase";
 import {
@@ -33,6 +34,7 @@ export default async function Article({ params }) {
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) notFound();
+  if (post.kind === "note") permanentRedirect(postPath(post));
   const db = await sessionDb();
   const { data: stats, error } = db
     ? await db.rpc("portfolio_vote_stats", { target_post: post.id })
@@ -85,7 +87,7 @@ export default async function Article({ params }) {
               : "See the work behind the words."}
           </h2>
           {related.map((p) => (
-            <Link key={p.id} href={`/writing/${p.slug}`}>
+            <Link key={p.id} href={postPath(p)}>
               {p.title}
             </Link>
           ))}

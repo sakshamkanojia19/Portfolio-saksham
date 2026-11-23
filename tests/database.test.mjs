@@ -212,5 +212,125 @@ test("portfolio authorization and vote integrity in PostgreSQL", async (t) => {
       );
     },
   );
+  await t.test(
+    "short-post migration preserves articles and applies the same access rules",
+    async () => {
+      const before = await db.query(
+        "select id,body from portfolio_posts order by id",
+      );
+      const migration = await readFile(
+        new URL(
+          "../supabase/migrations/202611240001_short_posts.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      );
+      await db.exec(migration);
+      await db.exec(migration); // Safe to reapply the additive follow-up.
+      assert.deepEqual(
+        (await db.query("select id,body from portfolio_posts order by id"))
+          .rows,
+        before.rows,
+      );
+      const note = "00000000-0000-0000-0000-000000000005";
+      await as(
+        "authenticated",
+        owner,
+        `insert into portfolio_posts(id,author_id,title,slug,excerpt,body,kind) values('${note}','${owner}','Quick thought','short-thought','A short thought about engineering.','Hi','note')`,
+      );
+      assert.equal(
+        (
+          await as(
+            "anon",
+            "",
+            `select * from portfolio_posts where id='${note}'`,
+          )
+        ).rows.length,
+        0,
+      );
+      await assert.rejects(
+        as(
+          "authenticated",
+          reader,
+          `insert into portfolio_posts(author_id,title,slug,excerpt,body,kind) values('${reader}','Quick thought','reader-note','A short thought about engineering.','Hi','note')`,
+        ),
+      );
+      await as(
+        "authenticated",
+        owner,
+        `update portfolio_posts set status='published' where id='${note}'`,
+      );
+      assert.equal(
+        (
+          await as(
+            "anon",
+            "",
+            `select body from portfolio_posts where id='${note}'`,
+          )
+        ).rows[0].body,
+        "Hi",
+      );
+      await assert.rejects(
+        as(
+          "authenticated",
+          owner,
+          `update portfolio_posts set kind='article',body='A sufficiently long article body which would otherwise pass the constraint.' where id='${note}'`,
+        ),
+      );
+      await assert.rejects(
+        as(
+          "authenticated",
+          owner,
+          `update portfolio_posts set body='Hi' where id='${post}'`,
+        ),
+      );
+      await assert.rejects(
+        as(
+          "authenticated",
+          owner,
+          `update portfolio_posts set body=' ' where id='${note}'`,
+        ),
+      );
+      const stats = await as(
+        "anon",
+        "",
+        `select * from portfolio_feed_votes(array['${post}','${draft}','${note}']::uuid[])`,
+      );
+      assert.deepEqual(
+        stats.rows.map((r) => r.post_id).sort(),
+        [post, note].sort(),
+      );
+      await db.exec(
+        `update portfolio_vote_limits set last_action=now()-interval '5 seconds'`,
+      );
+      assert.equal(
+        Number(
+          (
+            await as(
+              "authenticated",
+              reader,
+              `select set_portfolio_vote('${note}',true) as count`,
+            )
+          ).rows[0].count,
+        ),
+        1,
+      );
+      await as(
+        "authenticated",
+        owner,
+        `update portfolio_posts set status='draft' where id='${note}'`,
+      );
+      assert.equal(
+        (
+          await as(
+            "anon",
+            "",
+            `select * from portfolio_feed_votes(array['${note}']::uuid[])`,
+          )
+        ).rows.length,
+        0,
+      );
+    },
+  );
   await db.close();
 });

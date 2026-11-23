@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { configured, sessionDb, requireAdmin } from "../../lib/supabase";
 import { signOut } from "../actions";
-import Editor from "../../components/Editor";
+import PublishingDesk from "../../components/PublishingDesk";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Publishing desk",
@@ -55,6 +55,10 @@ export default async function Admin() {
     .order("updated_at", { ascending: false });
   if (error)
     throw new Error("Could not load articles. Check the database migration.");
+  const { error: notesError } = await db
+    .from("portfolio_posts")
+    .select("kind")
+    .limit(0);
   return (
     <div className="container admin-shell">
       <div className="page-heading">
@@ -71,7 +75,7 @@ export default async function Admin() {
           <button className="button secondary">Sign out</button>
         </form>
       </div>
-      <Editor posts={data || []} />
+      <PublishingDesk posts={data || []} notesReady={!notesError} />
     </div>
   );
 }

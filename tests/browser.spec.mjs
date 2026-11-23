@@ -16,6 +16,8 @@ test("public routes render, navigation works, and metadata exists without client
     "/work-with-me",
     "/contact",
     "/writing",
+    "/posts",
+    "/subscribe",
     "/privacy",
     "/admin",
     "/login",
@@ -59,6 +61,8 @@ test("desktop and mobile layout, theme, and menu", async ({ page }) => {
       "/about",
       "/work-with-me",
       "/writing",
+      "/posts",
+      "/subscribe",
       "/admin",
     ]) {
       await page.goto(path);
@@ -102,4 +106,27 @@ test("SEO endpoints, old redirects, resume, and missing pages", async ({
   expect(old.headers().location).toBe("/about#toolkit");
   expect((await request.get("/does-not-exist")).status()).toBe(404);
   expect((await request.get("/writing/unpublished")).status()).toBe(404);
+  expect((await request.get("/posts/unpublished")).status()).toBe(404);
+});
+test("follow updates explains RSS and keeps the private composer separate", async ({
+  page,
+}) => {
+  await page.goto("/posts");
+  await page
+    .getByRole("navigation", { name: "Browse publications" })
+    .getByRole("link", { name: "Follow updates" })
+    .click();
+  await expect(page).toHaveURL(/\/subscribe$/);
+  await expect(
+    page.getByRole("heading", { name: "What is RSS?" }),
+  ).toBeVisible();
+  await expect(page.getByLabel("RSS feed URL")).toHaveValue(/\/feed.xml$/);
+  await expect(
+    page.getByRole("link", { name: "View raw RSS XML" }),
+  ).toHaveAttribute("href", "/feed.xml");
+  await page
+    .getByRole("navigation", { name: "Browse publications" })
+    .getByRole("link", { name: "Author sign-in" })
+    .click();
+  await expect(page.locator(".quick-composer")).toHaveCount(0);
 });

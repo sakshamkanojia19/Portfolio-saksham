@@ -26,6 +26,7 @@
     "@electric-sql/pglite": "^0.5.17",
     "@eslint/js": "^8.57.0",
     "@playwright/test": "^1.65.1",
+    "esbuild": "^0.28.2",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.0.0",

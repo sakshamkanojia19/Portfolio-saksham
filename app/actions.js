@@ -4,6 +4,64 @@ import { redirect } from "next/navigation";
 import { requireAdmin, sessionDb } from "../lib/supabase";
 import { validatePost, safeNext } from "../lib/validation.mjs";
 import { siteUrl } from "../lib/site";
+import { prepareNote } from "../lib/publication.mjs";
+export async function saveNote(_, form) {
+  try {
+    const { db, user } = await requireAdmin();
+    const post = prepareNote(
+      Object.fromEntries(form),
+      crypto.randomUUID().slice(0, 8),
+    );
+    const id = String(form.get("id") || "");
+    let query;
+    if (id) {
+      if (!/^[0-9a-f-]{36}$/i.test(id))
+        return { error: "Invalid post identifier." };
+      const { data: existing, error } = await db
+        .from("portfolio_posts")
+        .select("slug,kind")
+        .eq("id", id)
+        .single();
+      if (error || existing?.kind !== "note")
+        return { error: "This short post could not be found." };
+      post.slug = existing.slug;
+      query = db
+        .from("portfolio_posts")
+        .update(post)
+        .eq("id", id)
+        .eq("kind", "note");
+    } else
+      query = db
+        .from("portfolio_posts")
+        .insert({ ...post, author_id: user.id });
+    const { data, error } = await query.select("id,slug,status").single();
+    if (error)
+      return {
+        error:
+          "Could not save. Confirm the short-post migration (202611240001_short_posts.sql) has been applied.",
+      };
+    for (const path of [
+      "/",
+      "/posts",
+      "/admin",
+      "/feed.xml",
+      "/sitemap.xml",
+      `/posts/${data.slug}`,
+    ])
+      revalidatePath(path);
+    return {
+      id: data.id,
+      slug: data.slug,
+      published: data.status === "published",
+      success:
+        data.status === "published"
+          ? "Posted. Your thought is now public."
+          : "Draft saved. Only you can see it.",
+    };
+  } catch (error) {
+    return { error: error.message || "Could not save this post." };
+  }
+}
 export async function sendLogin(_, form) {
   const email = String(form.get("email") || "")
     .trim()
@@ -57,6 +115,8 @@ export async function savePost(_, form) {
     revalidatePath("/writing");
     revalidatePath(`/writing/${data.slug}`);
     revalidatePath("/admin");
+    revalidatePath("/feed.xml");
+    revalidatePath("/sitemap.xml");
     return {
       success:
         data.status === "published"

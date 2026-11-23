@@ -8,6 +8,7 @@ export default function ArticleActions({
   initialCount,
   initialVoted,
   available,
+  href = `/writing/${slug}`,
 }) {
   const [count, setCount] = useState(initialCount);
   const [voted, setVoted] = useState(initialVoted);
@@ -19,7 +20,7 @@ export default function ArticleActions({
       try {
         const result = await vote(id, !voted);
         if (result.login) {
-          router.push(`/login?next=${encodeURIComponent(`/writing/${slug}`)}`);
+          router.push(`/login?next=${encodeURIComponent(href)}`);
           return;
         }
         if (result.error) setMessage(result.error);
@@ -37,8 +38,10 @@ export default function ArticleActions({
   }
   async function share() {
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      setMessage("Article link copied.");
+      await navigator.clipboard.writeText(
+        new URL(href, window.location.origin).href,
+      );
+      setMessage("Post link copied.");
     } catch {
       setMessage("Copy this page’s address from your browser to share it.");
     }
@@ -59,7 +62,7 @@ export default function ArticleActions({
               : "Upvotes unavailable"}
         </button>
         <button className="button secondary" onClick={share}>
-          Copy article link
+          Copy link
         </button>
       </div>
       <p role="status" className="status-message">

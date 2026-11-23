@@ -36,7 +36,20 @@ on conflict do nothing;
 
 If your existing project has broader storage policies, review them for interaction with the new bucket. PostgreSQL permissive policies combine with OR. This migration cannot audit existing project policies.
 
-## What is enforced
+## Short posts and articles
+
+For an existing installation, run **only** the new `supabase/migrations/202611240001_short_posts.sql` migration after the original migration. It preserves existing articles and votes, adds a `kind` field, allows short posts of 1–5,000 characters, and adds a public aggregate vote-count function. Do not rerun the original create-tables migration. For a fresh installation, run both files in filename order.
+
+- `/admin`: owner-only publishing desk. Start with **Short post**, type a thought, optionally add topics, then **Post publicly**. Titles, descriptions, and permanent URLs are generated automatically. Select an existing short post to edit it or use **Save draft** to unpublish it.
+- `/posts`: public timeline of short posts with their complete text, dates, share links, and signed-in upvotes.
+- `/posts/[slug]`: an individual post with its own canonical URL, metadata, social preview, and SocialMediaPosting structured data.
+- `/writing`: longer articles; the article editor is available under **Long-form article** in `/admin`.
+- `/subscribe`: a human-readable explanation of RSS with a copyable feed URL. This is not an email newsletter.
+- `/feed.xml`: machine-readable RSS including both published short posts and articles. Drafts are excluded.
+
+Publishing still requires the owner authorization described above. The public "Author sign-in" link does not grant visitors access. Apply the migration and deploy the updated application before trying the new composer in production.
+
+## Access controls
 
 - Public users can select only published articles. RLS protects drafts even through direct API requests.
 - Only UUIDs added to `portfolio_admins` can write posts or upload to `portfolio-images`. The allowlist has no client grants.
@@ -66,6 +79,8 @@ Verify the domain in Google Search Console and submit `/sitemap.xml`. Request in
 
 Monitor branded search impressions and qualified work inquiries. Structured data and technical SEO support indexing; they do not guarantee rankings. Publish original posts and link them to relevant case studies.
 
+SEO/AEO/GEO foundations include server-rendered public content, individual post URLs, automatic sitemap and RSS entries, visible authorship, linked Person/WebSite/ProfilePage entities, truthful article/post structured data, and direct answers on the About page. Public content is allowed by the general robots rule; deployment protection or a firewall must not block intended crawlers. There is no guarantee of Google rankings or citation in AI answers. Special "AI SEO" files are not a substitute for useful, original content. See [Google's AI search guidance](https://developers.google.com/search/docs/appearance/ai-features).
+
 ## Contact and privacy
 
 The inquiry form creates a mailto draft and explicitly requires the visitor to send it in their own email app. There is no inquiry database or email-delivery backend. Theme preference uses local storage; login uses essential cookies. Fonts load from Google Fonts. No analytics or advertising scripts are installed.
@@ -75,6 +90,9 @@ The inquiry form creates a mailto draft and explicitly requires the visitor to s
 ```powershell
 npm test
 npm run build
+npm run test:browser
 ```
 
 Real SMTP, Supabase storage, and production authentication must be verified after configuration.
+
+The composer browser test uses an isolated in-memory action stub; it does not publish test content or contact your account. Database permission tests run against disposable local PGlite, not production. End-to-end publishing on your Supabase project still requires your authenticated owner session.

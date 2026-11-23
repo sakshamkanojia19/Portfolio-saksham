@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getPosts } from "../../lib/posts";
 import { metadata as pageMeta } from "../../lib/site";
 import WritingList from "../../components/WritingList";
+import PublicationNav from "../../components/PublicationNav";
 export const dynamic = "force-dynamic";
 export const metadata = pageMeta(
   "Writing",
@@ -9,7 +10,8 @@ export const metadata = pageMeta(
   "/writing",
 );
 export default async function Writing() {
-  const { posts, unavailable } = await getPosts();
+  const { posts: all, unavailable } = await getPosts();
+  const posts = all.filter((p) => p.kind !== "note");
   return (
     <div className="container writing-container">
       <div className="page-heading">
@@ -24,10 +26,8 @@ export default async function Writing() {
           <br />
           behind building AI systems in the real world.
         </p>
-        <a className="text-link" href="/feed.xml">
-          Subscribe via RSS
-        </a>
       </div>
+      <PublicationNav current="writing" />
       {posts.length ? (
         <WritingList posts={posts} />
       ) : (

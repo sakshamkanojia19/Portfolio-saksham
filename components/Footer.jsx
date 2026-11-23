@@ -13,7 +13,7 @@ export default function Footer() {
         <a href={profile.github}>GitHub</a>
         <a href={profile.linkedin}>LinkedIn</a>
         <a href={`mailto:${profile.email}`}>Email</a>
-        <a href="/feed.xml">RSS</a>
+        <Link href="/subscribe">Follow updates</Link>
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} Saksham Kanojia</span>

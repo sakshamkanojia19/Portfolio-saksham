@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { experience, skills } from "../../lib/content";
-import { metadata as pageMeta } from "../../lib/site";
+import { metadata as pageMeta, jsonLd, siteUrl } from "../../lib/site";
 export const metadata = pageMeta(
   "About",
   "Meet Saksham Kanojia, a Delhi-based AI engineer building production GenAI, RAG, voice agents, and full-stack systems.",
@@ -87,6 +87,72 @@ export default function About() {
           <p>Udemy</p>
         </div>
       </section>
+      <section
+        className="profile-answers section"
+        aria-labelledby="profile-answers"
+      >
+        <span className="eyebrow">QUICK ANSWERS</span>
+        <h2 id="profile-answers">Working with Saksham.</h2>
+        <dl>
+          <div>
+            <dt>Who is Saksham Kanojia?</dt>
+            <dd>
+              Saksham Kanojia is an AI engineer based in Delhi, India, working
+              on production GenAI systems at Digital Web Solutions. His work
+              spans retrieval-augmented generation, agentic workflows, voice AI,
+              and full-stack applications.
+            </dd>
+          </div>
+          <div>
+            <dt>What has he built?</dt>
+            <dd>
+              His projects include{" "}
+              <Link href="/projects/nexus">
+                Nexus, a real-time voice RAG assistant
+              </Link>
+              , and{" "}
+              <Link href="/projects/collabdocs">
+                CollabDocs, a permission-aware document workspace
+              </Link>
+              . The case studies explain their architecture, decisions, and
+              reported results.
+            </dd>
+          </div>
+          <div>
+            <dt>Is he available for roles and freelance work?</dt>
+            <dd>
+              Yes. Saksham is open to AI engineering roles and select freelance
+              projects involving RAG assistants, voice systems, workflow
+              automation, and AI product development.{" "}
+              <Link href="/work-with-me">Share a role or project</Link> to
+              discuss fit.
+            </dd>
+          </div>
+          <div>
+            <dt>Where does he share engineering knowledge?</dt>
+            <dd>
+              Read his <Link href="/posts">short posts</Link> for quick thoughts
+              and updates, or explore{" "}
+              <Link href="/writing">longer technical articles</Link>. Both are
+              public and can be followed through RSS.
+            </dd>
+          </div>
+        </dl>
+      </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            "@id": `${siteUrl}/about#page`,
+            url: `${siteUrl}/about`,
+            name: "About Saksham Kanojia — AI Engineer",
+            mainEntity: { "@id": `${siteUrl}/#person` },
+            isPartOf: { "@id": `${siteUrl}/#website` },
+          }),
+        }}
+      />
       <div className="inline-cta">
         <h2>Let’s build something useful.</h2>
         <Link className="button primary" href="/work-with-me">

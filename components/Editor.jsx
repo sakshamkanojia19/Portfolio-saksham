@@ -206,9 +206,12 @@ function PostEditor({ initial, onDirtyChange }) {
     </form>
   );
 }
-export default function Editor({ posts }) {
+export default function Editor({ posts, onDirtyChange }) {
   const [selected, setSelected] = useState({ key: "new", data: {} });
   const [hasChanges, setHasChanges] = useState(false);
+  useEffect(() => {
+    onDirtyChange?.(hasChanges);
+  }, [hasChanges, onDirtyChange]);
   function select(key, data) {
     if (
       selected.key !== key &&

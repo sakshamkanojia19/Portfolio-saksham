@@ -4,6 +4,7 @@ import { profile, projects } from "../lib/content";
 import { getPosts } from "../lib/posts";
 import { dateLabel } from "../lib/site";
 import ProjectCard from "../components/ProjectCard";
+import { postPath } from "../lib/publication.mjs";
 export const dynamic = "force-dynamic";
 export default async function Home() {
   const { posts } = await getPosts();
@@ -124,18 +125,14 @@ export default async function Home() {
             Practical lessons in retrieval, voice, and engineering AI systems
             people can use.
           </p>
-          <Link className="text-link" href="/writing">
-            Visit the notebook
+          <Link className="text-link" href="/posts">
+            Visit the public notebook
           </Link>
         </div>
         <div className="note-list">
           {posts.length
             ? posts.slice(0, 3).map((p) => (
-                <Link
-                  className="note-item"
-                  key={p.id}
-                  href={`/writing/${p.slug}`}
-                >
+                <Link className="note-item" key={p.id} href={postPath(p)}>
                   <span>
                     {p.tags?.[0] || "ENGINEERING"} · {dateLabel(p.published_at)}
                   </span>

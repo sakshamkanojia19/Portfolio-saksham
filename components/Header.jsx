@@ -49,7 +49,7 @@ export default function Header() {
           {[
             ["/", "Home"],
             ["/projects", "Projects"],
-            ["/writing", "Writing"],
+            ["/posts", "Posts"],
             ["/about", "About"],
           ].map(([href, label]) => (
             <Link
