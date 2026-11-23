@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://saksham-kanojia.vercel.app/sitemap.xml
