@@ -19,7 +19,6 @@ test("public routes render, navigation works, and metadata exists without client
     "/posts",
     "/subscribe",
     "/privacy",
-    "/admin",
     "/login",
   ]) {
     const response = await page.goto(path);
@@ -63,7 +62,6 @@ test("desktop and mobile layout, theme, and menu", async ({ page }) => {
       "/writing",
       "/posts",
       "/subscribe",
-      "/admin",
     ]) {
       await page.goto(path);
       expect(
@@ -108,7 +106,7 @@ test("SEO endpoints, old redirects, resume, and missing pages", async ({
   expect((await request.get("/writing/unpublished")).status()).toBe(404);
   expect((await request.get("/posts/unpublished")).status()).toBe(404);
 });
-test("follow updates explains RSS and keeps the private composer separate", async ({
+test("follow updates explains RSS without exposing the private composer", async ({
   page,
 }) => {
   await page.goto("/posts");
@@ -124,9 +122,78 @@ test("follow updates explains RSS and keeps the private composer separate", asyn
   await expect(
     page.getByRole("link", { name: "View raw RSS XML" }),
   ).toHaveAttribute("href", "/feed.xml");
-  await page
-    .getByRole("navigation", { name: "Browse publications" })
-    .getByRole("link", { name: "Author sign-in" })
-    .click();
+  await expect(page.getByText("Publishing your own updates?")).toHaveCount(0);
+  await expect(page.locator('a[href^="/admin"]')).toHaveCount(0);
   await expect(page.locator(".quick-composer")).toHaveCount(0);
+});
+// Supabase is legitimately named on public pages (privacy notice, project
+// write-ups, toolkit), so public checks target setup-specific phrases only.
+const SETUP_LEAKS = [
+  /\.env/i,
+  /migration/i,
+  /ADMIN_EMAIL/,
+  /SQL editor/i,
+  /service[- ]role/i,
+  /Supabase settings/i,
+  /Ready when you are/i,
+  /Author sign-in/i,
+  /publishing desk/i,
+];
+test("public pages never link to or describe the private publishing area", async ({
+  request,
+}) => {
+  for (const path of [
+    "/",
+    "/projects",
+    "/projects/nexus",
+    "/about",
+    "/work-with-me",
+    "/contact",
+    "/writing",
+    "/posts",
+    "/subscribe",
+    "/privacy",
+    "/login",
+    "/does-not-exist",
+  ]) {
+    const html = await (await request.get(path)).text();
+    expect(html, path).not.toMatch(/href="\/admin/);
+    // Inspect only rendered text, not the serialized RSC payload or scripts.
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<[^>]+>/g, " ");
+    for (const leak of SETUP_LEAKS) expect(text, `${path} ${leak}`).not.toMatch(leak);
+  }
+  const login = await (await request.get("/login")).text();
+  expect(login).not.toMatch(/Publishing is restricted/i);
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).not.toContain("/admin");
+});
+test("direct /admin access is a generic 404 or a sign-in redirect, never setup help", async ({
+  request,
+}) => {
+  const response = await request.get("/admin", { maxRedirects: 0 });
+  if (response.status() === 404) {
+    // Unconfigured build: must be indistinguishable from any missing page.
+    const html = await response.text();
+    const generic = await (await request.get("/does-not-exist")).text();
+    const heading = (h) => h.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1];
+    expect(heading(html)).toBeTruthy();
+    expect(heading(html)).toBe(heading(generic));
+    // No dashboard bundles: the same scripts as any unknown URL.
+    const scripts = (h) =>
+      [...new Set(h.match(/\/_next\/static\/[^"'\s\\]+\.js/g))].sort();
+    expect(scripts(html)).toEqual(scripts(generic));
+    expect(html).toMatch(/<meta name="robots" content="noindex/);
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<[^>]+>/g, " ");
+    for (const leak of [...SETUP_LEAKS, /supabase/i]) expect(text).not.toMatch(leak);
+  } else {
+    // Configured build, signed out: sign-in is required.
+    expect(response.status()).toBe(307);
+    expect(response.headers().location).toMatch(
+      /\/login\?next=(\/|%2F)admin$/,
+    );
+  }
 });

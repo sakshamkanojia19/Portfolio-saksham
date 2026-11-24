@@ -38,12 +38,6 @@ export default function Subscribe() {
             <Link href="/posts">Browse the public posts</Link>. No sign-in is
             required. New posts will appear after I publish them.
           </p>
-          <h3>Publishing your own updates?</h3>
-          <p>
-            This is Saksham’s personal feed. The{" "}
-            <Link href="/admin">private publishing desk</Link> is restricted to
-            the owner account.
-          </p>
         </div>
         <FeedSubscription url={`${siteUrl}/feed.xml`} />
       </section>

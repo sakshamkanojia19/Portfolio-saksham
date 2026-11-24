@@ -20,9 +20,6 @@ export default function PublicationNav({ current }) {
       >
         Follow updates
       </Link>
-      <Link className="author-entry" href="/admin">
-        Author sign-in
-      </Link>
     </nav>
   );
 }

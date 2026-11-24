@@ -23,8 +23,7 @@ export default function LoginForm({ next }) {
         {state.error || state.success}
       </p>
       <p className="form-note">
-        Signing in lets you upvote articles. Publishing is restricted to
-        Saksham’s account.
+        Signing in lets you upvote posts and articles.
       </p>
     </form>
   );

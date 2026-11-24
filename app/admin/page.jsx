@@ -1,54 +1,25 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { configured, sessionDb, requireAdmin } from "../../lib/supabase";
 import { signOut } from "../actions";
 import PublishingDesk from "../../components/PublishingDesk";
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Publishing desk",
   robots: { index: false, follow: false },
 };
 export default async function Admin() {
-  if (!configured())
-    return (
-      <div className="container auth-shell">
-        <span className="eyebrow">PUBLISHING DESK</span>
-        <h1>Ready when you are.</h1>
-        <p>
-          To activate publishing, add the Supabase settings from .env.example to
-          .env.local, run the supplied database migration, and authorize your
-          account using the setup guide.
-        </p>
-        <p>
-          Your credentials stay outside version control. The public portfolio
-          works without them.
-        </p>
-        <Link className="button secondary" href="/">
-          View portfolio
-        </Link>
-      </div>
-    );
-  const db = await sessionDb();
+  // Unconfigured deployments and non-owner accounts get the generic 404 page;
+  // nothing here should reveal setup details or that a dashboard exists.
+  if (!configured()) notFound();
+  const session = await sessionDb();
   const {
-    data: { user },
-  } = await db.auth.getUser();
-  if (!user) redirect("/login?next=/admin");
-  try {
-    await requireAdmin();
-  } catch {
-    return (
-      <div className="container auth-shell">
-        <h1>Private publishing desk.</h1>
-        <p>
-          This account does not have publishing access. Only the site owner can
-          edit articles.
-        </p>
-        <form action={signOut}>
-          <button className="button secondary">Sign out</button>
-        </form>
-      </div>
-    );
-  }
+    data: { user: sessionUser },
+  } = await session.auth.getUser();
+  if (!sessionUser) redirect("/login?next=/admin");
+  // Server-side owner check: ADMIN_EMAIL plus the is_portfolio_admin RPC.
+  // notFound() must stay outside try/catch because it works by throwing.
+  const owner = await requireAdmin().catch(() => null);
+  if (!owner) notFound();
+  const { db, user } = owner;
   const { data, error } = await db
     .from("portfolio_posts")
     .select("*")

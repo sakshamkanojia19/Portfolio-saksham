@@ -47,7 +47,18 @@ For an existing installation, run **only** the new `supabase/migrations/20261124
 - `/subscribe`: a human-readable explanation of RSS with a copyable feed URL. This is not an email newsletter.
 - `/feed.xml`: machine-readable RSS including both published short posts and articles. Drafts are excluded.
 
-Publishing still requires the owner authorization described above. The public "Author sign-in" link does not grant visitors access. Apply the migration and deploy the updated application before trying the new composer in production.
+Publishing still requires the owner authorization described above. Apply the migration and deploy the updated application before trying the new composer in production.
+
+## Private dashboard access
+
+No public page links to `/admin`. Type the URL yourself.
+
+- Supabase not configured: `/admin` returns the site's generic 404 page. No setup or configuration details are shown.
+- Configured, signed out: `/admin` redirects to `/login?next=/admin`.
+- Signed in as any account other than the owner: generic 404.
+- Owner (`ADMIN_EMAIL` matches **and** `is_portfolio_admin()` returns true): the publishing dashboard.
+
+Hiding links is not the security boundary. Server actions call `requireAdmin()` before every write or upload, and Supabase RLS enforces the `portfolio_admins` allowlist. `/admin` is excluded from the sitemap and marked `noindex`. It is deliberately not listed in `robots.txt`, because that file is public and would advertise the path.
 
 ## Access controls
 
@@ -57,7 +68,7 @@ Publishing still requires the owner authorization described above. The public "A
 - Voter identities are not exposed. Public RPCs return totals and whether the current account voted.
 - A published slug cannot be changed, including after unpublishing. Unpublish with “Save as draft”.
 - Markdown does not execute raw HTML. Unsafe URL schemes are blocked by the renderer.
-- Admin/login pages are marked `noindex`; authorization does not depend on robots.txt.
+- Admin/login pages are marked `noindex`; authorization does not depend on robots.txt. Non-owners and unconfigured deployments get a 404 from `/admin`.
 - There are no service-role credentials or development authentication bypasses.
 
 ## Vercel deployment
