@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { prepareNote, postPath } from "../lib/publication.mjs";
+import { prepareNote, postPath, topicData } from "../lib/publication.mjs";
 import { buildRss } from "../lib/rss.mjs";
 test("short posts need only text; metadata is generated and routes stay distinct", () => {
   const post = prepareNote({ body: "Ship.", status: "published" }, "abcd1234");
@@ -53,4 +53,42 @@ test("RSS contains public notes and articles at their canonical URLs and exclude
   assert.ok(!xml.includes("private-draft"));
   assert.ok(xml.includes("RAG &amp; retrieval"));
   assert.ok(!xml.includes("<evidence>"));
+});
+test("RSS lists each topic as an escaped category", () => {
+  const xml = buildRss(
+    [
+      {
+        title: "Voice note",
+        slug: "voice",
+        kind: "note",
+        body: "Endpointing matters.",
+        tags: ["Voice AI", "R&D"],
+        published_at: "2026-11-27T10:00:00Z",
+        status: "published",
+      },
+      {
+        title: "Untagged",
+        slug: "untagged",
+        kind: "note",
+        body: "No topics.",
+        published_at: "2026-11-27T10:00:00Z",
+        status: "published",
+      },
+    ],
+    "https://example.com",
+  );
+  assert.ok(xml.includes("<category>Voice AI</category>"));
+  assert.ok(xml.includes("<category>R&amp;D</category>"));
+  assert.equal(xml.match(/<category>/g).length, 2);
+});
+test("topics become schema.org keywords and about entries", () => {
+  assert.deepEqual(topicData(["Voice AI", " RAG ", ""]), {
+    keywords: "Voice AI, RAG",
+    about: [
+      { "@type": "Thing", name: "Voice AI" },
+      { "@type": "Thing", name: "RAG" },
+    ],
+  });
+  assert.deepEqual(topicData([]), {});
+  assert.deepEqual(topicData(undefined), {});
 });

@@ -3,7 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { getPost, getPosts } from "../../../lib/posts";
 import { getLikeCounts } from "../../../lib/likes";
 import { metadata as pageMeta, jsonLd, siteUrl } from "../../../lib/site";
-import { postPath } from "../../../lib/publication.mjs";
+import { postPath, topicData } from "../../../lib/publication.mjs";
 import NoteCard from "../../../components/NoteCard";
 import PostFooter, { neighbours } from "../../../components/PostFooter";
 export const dynamic = "force-dynamic";
@@ -20,6 +20,7 @@ export async function generateMetadata({ params }) {
       publishedTime: p.published_at,
       modifiedTime: p.updated_at,
       authors: ["Saksham Kanojia"],
+      tags: p.tags,
       images: [`/posts/${p.slug}/opengraph-image`],
     },
   };
@@ -68,6 +69,7 @@ export default async function Post({ params }) {
             articleBody: post.body,
             datePublished: post.published_at,
             dateModified: post.updated_at,
+            ...topicData(post.tags),
             author: {
               "@type": "Person",
               "@id": `${siteUrl}/#person`,

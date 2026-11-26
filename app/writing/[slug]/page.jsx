@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { postPath } from "../../../lib/publication.mjs";
+import { postPath, topicData } from "../../../lib/publication.mjs";
 import { getPost, getPosts } from "../../../lib/posts";
 import { getLikeCounts } from "../../../lib/likes";
 import {
@@ -28,6 +28,7 @@ export async function generateMetadata({ params }) {
       publishedTime: p.published_at,
       modifiedTime: p.updated_at,
       authors: ["Saksham Kanojia"],
+      tags: p.tags,
     },
   };
 }
@@ -109,6 +110,7 @@ export default async function Article({ params }) {
             description: post.excerpt,
             datePublished: post.published_at,
             dateModified: post.updated_at,
+            ...topicData(post.tags),
             author: {
               "@type": "Person",
               "@id": `${siteUrl}/#person`,
