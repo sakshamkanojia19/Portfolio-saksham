@@ -10,29 +10,30 @@ export default async function Login({ searchParams }) {
   const params = await searchParams;
   return (
     <div className="auth-shell">
-      <span className="eyebrow">JOIN THE CONVERSATION</span>
+      <span className="eyebrow">SIGN IN</span>
       <h1>
-        A little signal
+        Welcome
         <br />
-        <em>goes a long way.</em>
+        <em>back.</em>
       </h1>
       <p>
-        Sign in to upvote useful engineering notes. No password to remember.
+        Readers don’t need an account. Like posts and follow updates directly
+        from any post.
       </p>
       {params.error && (
         <p role="alert">
-          That sign-in link could not be verified. Request a fresh link and open
-          it in the same browser.
+          That sign-in link could not be verified. Sign in with your email and
+          password instead.
         </p>
       )}
       {configured() ? (
         <LoginForm next={safeNext(params.next)} />
       ) : (
         <div className="auth-card">
-          <h2>Sign-in is coming soon.</h2>
-          <p>You can read every published article without an account.</p>
-          <Link className="text-link" href="/writing">
-            Back to writing
+          <h2>Sign-in is not available right now.</h2>
+          <p>You can read every published post without an account.</p>
+          <Link className="text-link" href="/posts">
+            Read the posts
           </Link>
         </div>
       )}

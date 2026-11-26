@@ -109,6 +109,19 @@ async function main() {
         }),
       (result) => !result.error && Array.isArray(result.data),
     ],
+    [
+      "Public like totals function (202611250001 migration)",
+      () =>
+        db.rpc("portfolio_like_counts", {
+          target_posts: ["00000000-0000-0000-0000-000000000000"],
+        }),
+      (result) => !result.error && Array.isArray(result.data),
+    ],
+    [
+      "Reader emails are private (must be denied)",
+      () => db.from("portfolio_likes").select("email").limit(1),
+      (result) => Boolean(result.error),
+    ],
   ];
   const results = await Promise.allSettled(
     checks.map(async ([label, run, passes]) => ({
@@ -123,7 +136,7 @@ async function main() {
     if (!passed) failed = true;
   });
   console.log(
-    "Read-only checks: no articles, accounts, votes, or database policies were changed.",
+    "Read-only checks: no articles, accounts, likes, or database policies were changed.",
   );
   if (failed) {
     console.log(

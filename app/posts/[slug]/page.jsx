@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { getPost } from "../../../lib/posts";
-import { sessionDb } from "../../../lib/supabase";
+import { getPost, getPosts } from "../../../lib/posts";
+import { getLikeCounts } from "../../../lib/likes";
 import { metadata as pageMeta, jsonLd, siteUrl } from "../../../lib/site";
 import { postPath } from "../../../lib/publication.mjs";
 import NoteCard from "../../../components/NoteCard";
+import PostFooter, { neighbours } from "../../../components/PostFooter";
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }) {
   const p = await getPost((await params).slug);
@@ -27,10 +28,11 @@ export default async function Post({ params }) {
   const post = await getPost((await params).slug);
   if (!post) notFound();
   if (post.kind !== "note") permanentRedirect(postPath(post));
-  const db = await sessionDb();
-  const { data: stats, error } = db
-    ? await db.rpc("portfolio_vote_stats", { target_post: post.id })
-    : { data: null, error: true };
+  const [likes, { posts }] = await Promise.all([
+    getLikeCounts([post.id]),
+    getPosts(),
+  ]);
+  const { newer, older } = neighbours(posts, post);
   return (
     <div className="container post-detail">
       <div className="page-heading">
@@ -41,10 +43,11 @@ export default async function Post({ params }) {
       </div>
       <NoteCard
         post={post}
-        stats={stats?.[0]}
-        votesAvailable={!error}
+        likeCount={likes.counts[post.id] || 0}
+        likesAvailable={likes.available}
         standalone
       />
+      <PostFooter post={post} newer={newer} older={older} />
       <div className="inline-cta">
         <p>Building something in this space?</p>
         <Link className="button secondary" href="/work-with-me">

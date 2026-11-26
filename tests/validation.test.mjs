@@ -1,6 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { safeNext, validatePost, xmlEscape } from "../lib/validation.mjs";
+import {
+  safeNext,
+  validatePost,
+  validateReader,
+  xmlEscape,
+} from "../lib/validation.mjs";
 const valid = {
   title: "A production engineering note",
   slug: "production-note",
@@ -41,4 +46,21 @@ test("feed text escapes XML markup and quotes", () => {
     xmlEscape("<script a=\"x\"> & 'test'"),
     "&lt;script a=&quot;x&quot;&gt; &amp; &apos;test&apos;",
   );
+});
+test("reader name and email are trimmed, lowercased, and validated", () => {
+  assert.deepEqual(
+    validateReader({ name: "  Asha  ", email: " Asha@Example.COM " }),
+    { name: "Asha", email: "asha@example.com" },
+  );
+  for (const input of [
+    { name: "", email: "asha@example.com" },
+    { name: "   ", email: "asha@example.com" },
+    { name: "x".repeat(81), email: "asha@example.com" },
+    { name: "Asha", email: "" },
+    { name: "Asha", email: "not-an-email" },
+    { name: "Asha", email: "two words@example.com" },
+    { name: "Asha", email: `${"a".repeat(250)}@x.io` },
+    null,
+  ])
+    assert.throws(() => validateReader(input));
 });

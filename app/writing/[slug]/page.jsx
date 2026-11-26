@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { postPath } from "../../../lib/publication.mjs";
 import { getPost, getPosts } from "../../../lib/posts";
-import { sessionDb } from "../../../lib/supabase";
+import { getLikeCounts } from "../../../lib/likes";
 import {
   dateLabel,
   readingTime,
@@ -11,7 +11,8 @@ import {
   jsonLd,
 } from "../../../lib/site";
 import Markdown from "../../../components/Markdown";
-import ArticleActions from "../../../components/ArticleActions";
+import LikeButton from "../../../components/LikeButton";
+import PostFooter, { neighbours } from "../../../components/PostFooter";
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -35,11 +36,11 @@ export default async function Article({ params }) {
   const post = await getPost(slug);
   if (!post) notFound();
   if (post.kind === "note") permanentRedirect(postPath(post));
-  const db = await sessionDb();
-  const { data: stats, error } = db
-    ? await db.rpc("portfolio_vote_stats", { target_post: post.id })
-    : { data: null, error: true };
-  const { posts } = await getPosts();
+  const [likes, { posts }] = await Promise.all([
+    getLikeCounts([post.id]),
+    getPosts(),
+  ]);
+  const { newer, older } = neighbours(posts, post);
   const related = posts
     .filter((p) => p.id !== post.id)
     .sort(
@@ -68,18 +69,19 @@ export default async function Article({ params }) {
           </div>
           <div className="tags">
             {post.tags.map((t) => (
-              <span key={t}>{t}</span>
+              <span key={t}>#{t}</span>
             ))}
           </div>
         </header>
         <Markdown>{post.body}</Markdown>
-        <ArticleActions
-          id={post.id}
-          slug={post.slug}
-          initialCount={Number(stats?.[0]?.vote_count || 0)}
-          initialVoted={Boolean(stats?.[0]?.has_voted)}
-          available={!error}
-        />
+        <div className="article-actions">
+          <LikeButton
+            id={post.id}
+            initialCount={likes.counts[post.id] || 0}
+            available={likes.available}
+          />
+        </div>
+        <PostFooter post={post} newer={newer} older={older} />
         <section className="related-posts">
           <h2>
             {related.length

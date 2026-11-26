@@ -332,5 +332,116 @@ test("portfolio authorization and vote integrity in PostgreSQL", async (t) => {
       );
     },
   );
+  await t.test(
+    "name + email likes and subscribers stay private, deduplicated, and published-only",
+    async () => {
+      const migration = await readFile(
+        new URL(
+          "../supabase/migrations/202611250001_likes_and_subscribers.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      );
+      await db.exec(migration);
+      await db.exec(migration); // Safe to re-run.
+      const count = async (id) =>
+        Number(
+          (
+            await as(
+              "anon",
+              "",
+              `select like_count from portfolio_like_counts(array['${id}']::uuid[])`,
+            )
+          ).rows[0]?.like_count ?? -1,
+        );
+      const like = (id, name, email) =>
+        as(
+          "anon",
+          "",
+          `select add_portfolio_like('${id}', '${name}', '${email}') as count`,
+        );
+      const before = await count(post); // Includes earlier signed-in upvotes.
+      assert.ok(before >= 0);
+      assert.equal(
+        Number((await like(post, "Asha", "asha@example.com")).rows[0].count),
+        before + 1,
+      );
+      // Same email in any case or spacing does not add a second like.
+      await like(post, "Asha again", "  ASHA@Example.com ");
+      assert.equal(await count(post), before + 1);
+      await like(post, "Ravi", "ravi@example.com");
+      assert.equal(await count(post), before + 2);
+      // Drafts and unknown posts reject likes and expose no counts.
+      await assert.rejects(like(draft, "Asha", "asha@example.com"));
+      await assert.rejects(
+        like(
+          "00000000-0000-0000-0000-0000000000ff",
+          "Asha",
+          "asha@example.com",
+        ),
+      );
+      assert.equal(await count(draft), -1);
+      // Invalid input is rejected.
+      for (const [name, email] of [
+        ["", "asha@example.com"],
+        ["Asha", "not-an-email"],
+        ["Asha", "two words@example.com"],
+        ["x".repeat(81), "asha@example.com"],
+      ])
+        await assert.rejects(like(post, name, email));
+      // Subscribers: idempotent and never overwritten by a second sign-up.
+      for (const name of ["Asha", "Someone else"])
+        await as(
+          "anon",
+          "",
+          `select add_portfolio_subscriber('${name}', 'Asha@Example.com', '/posts/x')`,
+        );
+      await assert.rejects(
+        as("anon", "", `select add_portfolio_subscriber('Asha', 'bad')`),
+      );
+      const stored = await db.query(
+        "select email, name from portfolio_subscribers",
+      );
+      assert.deepEqual(stored.rows, [
+        { email: "asha@example.com", name: "Asha" },
+      ]);
+      // Readers' emails are never readable or writable through the API.
+      for (const [role, actor] of [
+        ["anon", ""],
+        ["authenticated", reader],
+        ["authenticated", owner],
+      ]) {
+        for (const table of ["portfolio_likes", "portfolio_subscribers"]) {
+          await assert.rejects(as(role, actor, `select * from ${table}`));
+          await assert.rejects(
+            as(role, actor, `delete from ${table} where true`),
+          );
+        }
+        await assert.rejects(
+          as(
+            role,
+            actor,
+            `insert into portfolio_likes(post_id,email,name) values('${post}','fake@example.com','Fake')`,
+          ),
+        );
+      }
+      // Per-email throttle: at most 20 new likes in 10 minutes.
+      const extra = [];
+      for (let i = 0; i < 21; i++) {
+        const id = `00000000-0000-0000-0000-0000000001${String(i).padStart(2, "0")}`;
+        extra.push(id);
+        await as(
+          "authenticated",
+          owner,
+          `insert into portfolio_posts(id,author_id,title,slug,excerpt,body,kind,status) values('${id}','${owner}','Quick thought ${i}','throttle-${i}','A short thought about engineering.','Hi','note','published')`,
+        );
+      }
+      for (const id of extra.slice(0, 20))
+        await like(id, "Flood", "flood@example.com");
+      await assert.rejects(like(extra[20], "Flood", "flood@example.com"));
+      await like(extra[20], "Someone", "someone@example.com");
+      assert.equal(await count(extra[20]), 1);
+    },
+  );
   await db.close();
 });

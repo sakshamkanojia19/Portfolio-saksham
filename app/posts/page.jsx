@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { getPosts } from "../../lib/posts";
-import { sessionDb } from "../../lib/supabase";
+import { getLikeCounts } from "../../lib/likes";
 import { metadata as pageMeta, jsonLd, siteUrl } from "../../lib/site";
 import { postPath } from "../../lib/publication.mjs";
 import PublicationNav from "../../components/PublicationNav";
 import NoteCard from "../../components/NoteCard";
+import SubscribeBox from "../../components/SubscribeBox";
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams;
@@ -21,12 +22,7 @@ export default async function Posts({ searchParams }) {
   const { posts, unavailable } = await getPosts();
   const all = posts.filter((p) => p.kind === "note");
   const notes = all.slice((page - 1) * 20, page * 20);
-  const db = notes.length ? await sessionDb() : null;
-  const { data: stats, error } = db
-    ? await db.rpc("portfolio_feed_votes", {
-        target_posts: notes.map((p) => p.id),
-      })
-    : { data: [], error: true };
+  const likes = await getLikeCounts(notes.map((p) => p.id));
   return (
     <div className="container posts-container">
       <div className="page-heading">
@@ -38,7 +34,7 @@ export default async function Posts({ searchParams }) {
         </h1>
         <p>
           Quick thoughts, small discoveries, and lessons from building AI
-          systems. Read freely. Sign in to upvote something useful.
+          systems. Read freely, and like what’s useful—no account needed.
         </p>
       </div>
       <PublicationNav current="posts" />
@@ -48,8 +44,8 @@ export default async function Posts({ searchParams }) {
             <NoteCard
               key={post.id}
               post={post}
-              stats={stats?.find((s) => s.post_id === post.id)}
-              votesAvailable={!error}
+              likeCount={likes.counts[post.id] || 0}
+              likesAvailable={likes.available}
             />
           ))}
           {!notes.length && (
@@ -111,9 +107,9 @@ export default async function Posts({ searchParams }) {
           </Link>
           <hr />
           <h3>Stay in the loop.</h3>
-          <p>Follow new posts in your RSS reader. No account needed to read.</p>
+          <SubscribeBox source="/posts" heading="Get new posts by email." />
           <Link className="text-link" href="/subscribe">
-            How to follow
+            Or follow with RSS
           </Link>
         </aside>
       </div>

@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Markdown from "./Markdown";
-import ArticleActions from "./ArticleActions";
+import LikeButton from "./LikeButton";
+import CopyLinkButton from "./CopyLinkButton";
 import { postPath } from "../lib/publication.mjs";
 import { dateLabel } from "../lib/site";
 export default function NoteCard({
   post,
-  stats,
-  votesAvailable,
+  likeCount = 0,
+  likesAvailable,
   standalone = false,
 }) {
   return (
@@ -34,19 +35,24 @@ export default function NoteCard({
           ))}
         </div>
       )}
-      <ArticleActions
-        id={post.id}
-        slug={post.slug}
-        href={postPath(post)}
-        initialCount={Number(stats?.vote_count || 0)}
-        initialVoted={Boolean(stats?.has_voted)}
-        available={votesAvailable}
-      />
-      {!standalone && (
-        <Link className="text-link note-permalink" href={postPath(post)}>
-          Open post
-        </Link>
-      )}
+      <div className="article-actions">
+        <LikeButton
+          id={post.id}
+          initialCount={likeCount}
+          available={likesAvailable}
+        />
+        {!standalone && (
+          <div className="note-links">
+            <CopyLinkButton
+              href={postPath(post)}
+              className="button secondary"
+            />
+            <Link className="text-link note-permalink" href={postPath(post)}>
+              Open post
+            </Link>
+          </div>
+        )}
+      </div>
     </article>
   );
 }

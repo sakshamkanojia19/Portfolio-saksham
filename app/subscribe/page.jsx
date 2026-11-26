@@ -2,9 +2,10 @@ import Link from "next/link";
 import { metadata as pageMeta, siteUrl } from "../../lib/site";
 import PublicationNav from "../../components/PublicationNav";
 import FeedSubscription from "../../components/FeedSubscription";
+import SubscribeBox from "../../components/SubscribeBox";
 export const metadata = pageMeta(
   "Follow posts and articles",
-  "Follow Saksham Kanojia’s AI engineering posts and articles using the public RSS feed.",
+  "Get Saksham Kanojia’s AI engineering posts and articles by email or through the public RSS feed.",
   "/subscribe",
 );
 export default function Subscribe() {
@@ -17,9 +18,12 @@ export default function Subscribe() {
           <br />
           <em>On your own terms.</em>
         </h1>
-        <p>Read new posts here, or follow them in an RSS reader.</p>
+        <p>
+          Get new posts by email, read them here, or follow in an RSS reader.
+        </p>
       </div>
       <PublicationNav current="subscribe" />
+      <SubscribeBox source="/subscribe" />
       <section className="subscribe-layout">
         <div className="prose">
           <h2>What is RSS?</h2>

@@ -1,9 +1,8 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin, sessionDb } from "../lib/supabase";
-import { validatePost, safeNext } from "../lib/validation.mjs";
-import { siteUrl } from "../lib/site";
+import { requireAdmin, sessionDb, publicDb } from "../lib/supabase";
+import { validatePost, validateReader, safeNext } from "../lib/validation.mjs";
 import { prepareNote } from "../lib/publication.mjs";
 export async function saveNote(_, form) {
   try {
@@ -62,31 +61,27 @@ export async function saveNote(_, form) {
     return { error: error.message || "Could not save this post." };
   }
 }
-export async function sendLogin(_, form) {
+export async function signIn(_, form) {
   const email = String(form.get("email") || "")
     .trim()
     .toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254)
-    return { error: "Enter a valid email address." };
+  const password = String(form.get("password") || "");
+  if (!email || !password)
+    return { error: "Enter your email and password.", email };
   const db = await sessionDb();
-  if (!db)
-    return { error: "Sign-in is not available yet. Please check back soon." };
-  const next = safeNext(form.get("next"));
-  const { error } = await db.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`,
-    },
-  });
+  if (!db) return { error: "Sign-in is not available right now.", email };
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  // One generic message: never reveal whether an account exists.
   if (error)
     return {
       error:
-        "The sign-in email could not be sent. Please wait a minute and try again.",
+        error.status === 429
+          ? "Too many attempts. Please wait a few minutes and try again."
+          : "Email or password is incorrect.",
+      // Keep the email filled in; React resets the form after an action.
+      email,
     };
-  return {
-    success:
-      "Check your inbox for a sign-in link. Open it in this browser. The link expires and can only be used once.",
-  };
+  redirect(safeNext(form.get("next") || "/admin"));
 }
 export async function signOut() {
   const db = await sessionDb();
@@ -163,22 +158,58 @@ export async function uploadImage(form) {
     return { error: "Only the publishing account can upload images." };
   }
 }
-export async function vote(postId, active) {
-  const db = await sessionDb();
-  if (!db) return { error: "Voting is not available yet." };
-  const {
-    data: { user },
-  } = await db.auth.getUser();
-  if (!user) return { login: true };
-  if (typeof active !== "boolean" || !/^[0-9a-f-]{36}$/i.test(postId))
-    return { error: "Invalid vote." };
-  const { data, error } = await db.rpc("set_portfolio_vote", {
+// Reader actions: no account. Validation, deduplication, and throttling are
+// enforced again inside the database functions.
+const readerError = (error, fallback) =>
+  error?.code === "PT429"
+    ? "Too many requests right now. Please try again later."
+    : error?.code === "PT404"
+      ? "This post is not available."
+      : error?.code === "PT400"
+        ? error.message
+        : fallback;
+export async function likePost(postId, reader) {
+  if (!/^[0-9a-f-]{36}$/i.test(String(postId)))
+    return { error: "This post is not available." };
+  let clean;
+  try {
+    clean = validateReader(reader);
+  } catch (error) {
+    return { error: error.message };
+  }
+  // Bots that fill the hidden field get a convincing no-op.
+  if (reader?.website) return { liked: true };
+  const db = publicDb();
+  if (!db) return { error: "Likes are not available yet." };
+  const { data, error } = await db.rpc("add_portfolio_like", {
     target_post: postId,
-    desired: active,
+    reader_name: clean.name,
+    reader_email: clean.email,
   });
   if (error)
     return {
-      error: "Could not update your vote. Wait a few seconds and try again.",
+      error: readerError(error, "Could not save your like. Please try again."),
     };
-  return { count: Number(data), voted: active };
+  return { liked: true, count: Number(data) };
+}
+export async function subscribeToUpdates(reader, source = "") {
+  let clean;
+  try {
+    clean = validateReader(reader);
+  } catch (error) {
+    return { error: error.message };
+  }
+  if (reader?.website) return { subscribed: true };
+  const db = publicDb();
+  if (!db) return { error: "Email updates are not available yet." };
+  const { error } = await db.rpc("add_portfolio_subscriber", {
+    reader_name: clean.name,
+    reader_email: clean.email,
+    signup_source: String(source || "").slice(0, 200) || null,
+  });
+  if (error)
+    return {
+      error: readerError(error, "Could not subscribe you. Please try again."),
+    };
+  return { subscribed: true };
 }

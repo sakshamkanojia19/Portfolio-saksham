@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { profile, projects } from "../lib/content";
 import { getPosts } from "../lib/posts";
-import { dateLabel } from "../lib/site";
+import { dateLabel, readingTime } from "../lib/site";
 import ProjectCard from "../components/ProjectCard";
 import { postPath } from "../lib/publication.mjs";
 export const dynamic = "force-dynamic";
@@ -93,6 +93,39 @@ export default async function Home() {
           validated with leadership.
         </p>
       </section>
+      {posts.length > 0 && (
+        <section
+          className="section latest-posts"
+          aria-labelledby="latest-heading"
+        >
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">LATEST POSTS</span>
+              <h2 id="latest-heading">Notes from the build.</h2>
+            </div>
+            <Link className="text-link" href="/posts">
+              All posts
+            </Link>
+          </div>
+          <ol className="latest-list">
+            {posts.slice(0, 5).map((p) => (
+              <li key={p.id}>
+                <Link href={postPath(p)}>
+                  <h3>{p.title}</h3>
+                </Link>
+                <p className="latest-meta">
+                  <time dateTime={p.published_at}>
+                    {dateLabel(p.published_at)}
+                  </time>{" "}
+                  · {readingTime(p.body)} min read ·{" "}
+                  {p.kind === "note" ? "Short post" : "Article"}
+                </p>
+                <p>{p.excerpt}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
       <section className="section">
         <div className="section-heading">
           <div>
@@ -112,66 +145,52 @@ export default async function Home() {
           ))}
         </div>
       </section>
-      <section className="workbench section">
-        <div className="workbench-intro">
-          <span className="eyebrow">
-            {posts.length ? "WRITING & FIELD NOTES" : "FROM THE WORKBENCH"}
-          </span>
-          <h2>
-            The thinking <br />
-            behind the build.
-          </h2>
-          <p>
-            Practical lessons in retrieval, voice, and engineering AI systems
-            people can use.
-          </p>
-          <Link className="text-link" href="/posts">
-            Visit the public notebook
-          </Link>
-        </div>
-        <div className="note-list">
-          {posts.length
-            ? posts.slice(0, 3).map((p) => (
-                <Link className="note-item" key={p.id} href={postPath(p)}>
-                  <span>
-                    {p.tags?.[0] || "ENGINEERING"} · {dateLabel(p.published_at)}
-                  </span>
-                  <h3>{p.title}</h3>
-                  <p>{p.excerpt}</p>
-                </Link>
-              ))
-            : [
-                [
-                  "nexus",
-                  "VOICE AI",
-                  "When a pause isn’t the end of a sentence",
-                  "Inside Nexus: endpointing, barge-in, and the engineering of conversation.",
-                ],
-                [
-                  "collabdocs",
-                  "RETRIEVAL",
-                  "Permissions belong before generation",
-                  "How CollabDocs keeps retrieval inside the user’s access boundary.",
-                ],
-                [
-                  "lead-intelligence-agent",
-                  "AGENTIC SYSTEMS",
-                  "Good outreach starts with good context",
-                  "A look at the research pipeline behind Lead Intelligence.",
-                ],
-              ].map(([slug, tag, title, desc]) => (
-                <Link
-                  className="note-item"
-                  href={`/projects/${slug}`}
-                  key={slug}
-                >
-                  <span>{tag} · PROJECT NOTE</span>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
-                </Link>
-              ))}
-        </div>
-      </section>
+      {!posts.length && (
+        <section className="workbench section">
+          <div className="workbench-intro">
+            <span className="eyebrow">FROM THE WORKBENCH</span>
+            <h2>
+              The thinking <br />
+              behind the build.
+            </h2>
+            <p>
+              Practical lessons in retrieval, voice, and engineering AI systems
+              people can use.
+            </p>
+            <Link className="text-link" href="/posts">
+              Visit the public notebook
+            </Link>
+          </div>
+          <div className="note-list">
+            {[
+              [
+                "nexus",
+                "VOICE AI",
+                "When a pause isn’t the end of a sentence",
+                "Inside Nexus: endpointing, barge-in, and the engineering of conversation.",
+              ],
+              [
+                "collabdocs",
+                "RETRIEVAL",
+                "Permissions belong before generation",
+                "How CollabDocs keeps retrieval inside the user’s access boundary.",
+              ],
+              [
+                "lead-intelligence-agent",
+                "AGENTIC SYSTEMS",
+                "Good outreach starts with good context",
+                "A look at the research pipeline behind Lead Intelligence.",
+              ],
+            ].map(([slug, tag, title, desc]) => (
+              <Link className="note-item" href={`/projects/${slug}`} key={slug}>
+                <span>{tag} · PROJECT NOTE</span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
       <section className="about-teaser section">
         <div className="eyebrow">A LITTLE CONTEXT</div>
         <div>
