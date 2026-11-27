@@ -9,18 +9,20 @@ export const metadata = pageMeta(
 export default function Projects() {
   return (
     <div className="container">
-      <div className="page-heading">
+      <div className="page-heading" data-reveal>
         <span className="eyebrow">SELECTED ENGINEERING</span>
-        <h1>Ideas, made useful.</h1>
+        <h1>
+          Ideas, <em>made useful.</em>
+        </h1>
         <p>
           The systems I’ve built, the problems behind them,
           <br />
           and the decisions that shaped the result.
         </p>
       </div>
-      <div className="project-grid all-projects">
-        {projects.map((p) => (
-          <ProjectCard key={p.slug} project={p} />
+      <div className="work-list all-projects">
+        {projects.map((p, i) => (
+          <ProjectCard key={p.slug} project={p} index={i} />
         ))}
       </div>
     </div>

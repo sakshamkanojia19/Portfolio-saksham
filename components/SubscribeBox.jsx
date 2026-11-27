@@ -3,6 +3,7 @@ import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { subscribeToUpdates } from "../app/actions";
 import { savedReader, saveReader } from "../lib/reader.mjs";
+import Spinner from "./Spinner";
 export default function SubscribeBox({
   source = "",
   heading = "New posts, build notes, and lessons from shipping AI—straight to your inbox.",
@@ -74,7 +75,13 @@ export default function SubscribeBox({
               <input name="website" tabIndex={-1} autoComplete="off" />
             </label>
             <button className="button primary" disabled={pending}>
-              {pending ? "Subscribing…" : "Subscribe"}
+              {pending ? (
+                <>
+                  <Spinner /> Subscribing
+                </>
+              ) : (
+                "Subscribe"
+              )}
             </button>
           </div>
           <p className="form-error" role="alert">

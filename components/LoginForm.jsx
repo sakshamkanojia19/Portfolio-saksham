@@ -1,6 +1,7 @@
 "use client";
 import { useActionState } from "react";
 import { signIn } from "../app/actions";
+import Spinner from "./Spinner";
 export default function LoginForm({ next }) {
   const [state, action, pending] = useActionState(signIn, {});
   return (
@@ -27,7 +28,13 @@ export default function LoginForm({ next }) {
         />
       </label>
       <button className="button primary" disabled={pending}>
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? (
+          <>
+            <Spinner /> Signing in
+          </>
+        ) : (
+          "Sign in"
+        )}
       </button>
       <p className="status-message" role="status">
         {state.error}

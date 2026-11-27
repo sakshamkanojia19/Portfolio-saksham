@@ -3,6 +3,7 @@ import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { saveNote } from "../app/actions";
 import Markdown from "./Markdown";
+import Spinner from "./Spinner";
 export default function QuickComposer({ initial = {}, onDirtyChange }) {
   const [state, action, pending] = useActionState(saveNote, {});
   const [body, setBody] = useState(initial.body || "");
@@ -98,7 +99,15 @@ export default function QuickComposer({ initial = {}, onDirtyChange }) {
             className="button primary"
             disabled={pending || !body.trim()}
           >
-            {pending ? "Saving…" : id ? "Publish changes" : "Post publicly"}
+            {pending ? (
+              <>
+                <Spinner /> Saving
+              </>
+            ) : id ? (
+              "Publish changes"
+            ) : (
+              "Post publicly"
+            )}
           </button>
         </div>
         <p role="status" className="status-message">

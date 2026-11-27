@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { likePost, subscribeToUpdates } from "../app/actions";
+import Spinner from "./Spinner";
 import {
   savedReader,
   saveReader,
@@ -89,7 +90,11 @@ export default function LikeButton({ id, initialCount = 0, available = true }) {
         {!available
           ? "Likes unavailable"
           : pending
-            ? "Saving…"
+            ? (
+              <>
+                <Spinner /> Saving
+              </>
+            )
             : `${liked ? "Liked" : "Like"} · ${count}`}
       </button>
       <p className="status-message" role="status">
@@ -142,7 +147,13 @@ export default function LikeButton({ id, initialCount = 0, available = true }) {
           </p>
           <div className="dialog-actions">
             <button className="button primary" disabled={pending}>
-              {pending ? "Saving…" : "♥ Like"}
+              {pending ? (
+                <>
+                  <Spinner /> Saving
+                </>
+              ) : (
+                "♥ Like"
+              )}
             </button>
             <button
               type="button"

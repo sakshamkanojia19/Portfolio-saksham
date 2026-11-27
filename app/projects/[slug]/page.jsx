@@ -23,7 +23,7 @@ export default async function Project({ params }) {
   if (!p) notFound();
   return (
     <div className="container">
-      <div className="page-heading project-heading">
+      <div className="page-heading project-heading" data-reveal>
         <Link className="back-link" href="/projects">
           All projects
         </Link>

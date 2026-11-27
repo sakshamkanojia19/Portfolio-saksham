@@ -1,6 +1,7 @@
 import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Interactions from "../components/motion/Interactions";
 import { siteUrl, jsonLd } from "../lib/site";
 import { profile } from "../lib/content";
 export const metadata = {
@@ -25,7 +26,7 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#111310",
+  themeColor: "#0a0b09",
 };
 export default function RootLayout({ children }) {
   return (
@@ -33,7 +34,7 @@ export default function RootLayout({ children }) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{document.documentElement.dataset.theme=localStorage.getItem('portfolio-theme')||'dark'}catch(e){}`,
+            __html: `document.documentElement.classList.add('js');try{document.documentElement.dataset.theme=localStorage.getItem('portfolio-theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}`,
           }}
         />
       </head>
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
         <a className="skip-link" href="#main">
           Skip to content
         </a>
+        <Interactions />
         <Header />
         <main id="main">{children}</main>
         <Footer />

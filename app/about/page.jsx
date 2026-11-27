@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { experience, skills } from "../../lib/content";
+import Timeline from "../../components/home/Timeline";
+import Toolkit from "../../components/home/Toolkit";
 import { metadata as pageMeta, jsonLd, siteUrl } from "../../lib/site";
 export const metadata = pageMeta(
   "About",
@@ -10,7 +11,7 @@ export const metadata = pageMeta(
 export default function About() {
   return (
     <div className="container">
-      <section className="about-heading page-heading">
+      <section className="about-heading page-heading" data-reveal>
         <div>
           <span className="eyebrow">THE PERSON BEHIND THE SYSTEMS</span>
           <h1>
@@ -44,32 +45,14 @@ export default function About() {
         <span className="eyebrow">EXPERIENCE</span>
         <h2>Where the work happens.</h2>
         <div className="experience-list">
-          {experience.map((e) => (
-            <article className="experience-row" key={e.company}>
-              <div>
-                <span className="mono">{e.period}</span>
-                <h3>{e.company}</h3>
-                <p>{e.role}</p>
-              </div>
-              <ul>
-                {e.points.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
+          <Timeline />
         </div>
       </section>
       <section id="toolkit" className="section">
         <span className="eyebrow">THE TOOLKIT</span>
         <h2>Tools, with a purpose.</h2>
-        <div className="skills-list">
-          {skills.map(([name, tools]) => (
-            <div key={name}>
-              <h3>{name}</h3>
-              <p>{tools}</p>
-            </div>
-          ))}
+        <div className="experience-list">
+          <Toolkit />
         </div>
       </section>
       <section className="education section">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { savePost, uploadImage } from "../app/actions";
 import Markdown from "./Markdown";
 import { starterDrafts } from "../lib/drafts";
+import Spinner from "./Spinner";
 function PostEditor({ initial, onDirtyChange }) {
   const router = useRouter();
   const [state, action, pending] = useActionState(savePost, {});
@@ -41,7 +42,7 @@ function PostEditor({ initial, onDirtyChange }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    setUpload("Uploading…");
+    setUpload("Uploading image");
     const form = new FormData();
     form.set("image", file);
     try {
@@ -168,7 +169,13 @@ function PostEditor({ initial, onDirtyChange }) {
             value="draft"
             disabled={pending || uploading}
           >
-            {pending ? "Saving…" : "Save as draft"}
+            {pending ? (
+              <>
+                <Spinner /> Saving
+              </>
+            ) : (
+              "Save as draft"
+            )}
           </button>
           <button
             className="button primary"
@@ -176,7 +183,13 @@ function PostEditor({ initial, onDirtyChange }) {
             value="published"
             disabled={pending || uploading}
           >
-            {pending ? "Saving…" : "Publish article"}
+            {pending ? (
+              <>
+                <Spinner /> Saving
+              </>
+            ) : (
+              "Publish article"
+            )}
           </button>
         </div>
         <p className="form-note">

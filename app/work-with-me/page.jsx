@@ -10,7 +10,7 @@ export const metadata = pageMeta(
 export default function Work() {
   return (
     <div className="container">
-      <div className="page-heading">
+      <div className="page-heading" data-reveal>
         <span className="eyebrow">OPEN TO THE RIGHT PROBLEMS</span>
         <h1>
           Your next idea.
@@ -24,14 +24,19 @@ export default function Work() {
         </p>
       </div>
       <div className="service-grid">
-        {services.map((s) => (
-          <article key={s.title}>
+        {services.map((s, i) => (
+          <article
+            key={s.title}
+            className="spotlight"
+            data-reveal
+            style={{ "--d": i % 2 }}
+          >
             <span className="service-icon">✧</span>
             <h2>{s.title}</h2>
             <p>{s.text}</p>
             <span className="service-tags">{s.tags}</span>
             <Link className="text-link" href={`/projects/${s.project}`}>
-              See relevant work
+              See relevant work →
             </Link>
           </article>
         ))}
