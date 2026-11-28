@@ -1,46 +1,78 @@
 import Link from "next/link";
 import { profile } from "../lib/content";
 
+const COLUMNS = [
+  [
+    "Work",
+    [
+      ["/projects", "Case studies"],
+      ["/about", "About"],
+      ["/about#experience", "Experience"],
+      ["/work-with-me", "Work with me"],
+    ],
+  ],
+  [
+    "Publishing",
+    [
+      ["/posts", "Short posts"],
+      ["/writing", "Articles"],
+      ["/subscribe", "Follow updates"],
+      ["/feed.xml", "RSS feed"],
+    ],
+  ],
+];
+
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer-top">
+      <div className="container footer-grid">
         <div className="footer-brand">
-          <Link className="footer-name" href="/">
-            Saksham Kanojia<span>.</span>
+          <Link className="wordmark" href="/">
+            SAKSHAM<span className="wordmark-dot">.</span>
           </Link>
-          <p>Building useful AI. Sharing what I learn.</p>
-          <span className="footer-status">
-            <span className="pulse" /> Available for roles &amp; select projects
-          </span>
+          <p>
+            AI engineer building production RAG, agentic workflows, and
+            real-time voice systems. Delhi, India.
+          </p>
+          <a className="footer-mail" href={`mailto:${profile.email}`}>
+            {profile.email}
+          </a>
         </div>
-        <div className="footer-cols">
-          <div>
-            <span className="footer-head">Explore</span>
-            <Link href="/projects">Projects</Link>
-            <Link href="/posts">Posts</Link>
-            <Link href="/writing">Articles</Link>
-            <Link href="/about">About</Link>
+        {COLUMNS.map(([title, links]) => (
+          <div className="footer-col" key={title}>
+            <span className="footer-head">{title}</span>
+            {links.map(([href, label]) =>
+              href.endsWith(".xml") ? (
+                <a key={href} href={href}>
+                  {label}
+                </a>
+              ) : (
+                <Link key={href} href={href}>
+                  {label}
+                </Link>
+              ),
+            )}
           </div>
-          <div>
-            <span className="footer-head">Connect</span>
-            <a href={profile.github} target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-            <a href={`mailto:${profile.email}`}>Email</a>
-            <Link href="/subscribe">Follow updates</Link>
-          </div>
+        ))}
+        <div className="footer-col">
+          <span className="footer-head">Elsewhere</span>
+          <a href={profile.github} target="_blank" rel="noopener noreferrer">
+            GitHub ↗
+          </a>
+          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+            LinkedIn ↗
+          </a>
+          <a href="/resume.docx" download>
+            Resume ↓
+          </a>
         </div>
       </div>
-      <div className="footer-mark" aria-hidden="true">
-        sk<span>.</span>
-      </div>
-      <div className="footer-bottom">
+      <div className="container footer-bottom">
         <span>© {new Date().getFullYear()} Saksham Kanojia</span>
-        <span>Made with intention, in Delhi · 28.6139° N 77.2090° E</span>
+        <span className="footer-status">
+          <span className="status-dot" aria-hidden="true" /> Open to roles
+          &amp; select projects
+        </span>
         <Link href="/privacy">Privacy</Link>
       </div>
     </footer>

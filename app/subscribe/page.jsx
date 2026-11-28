@@ -12,7 +12,7 @@ export default function Subscribe() {
   return (
     <div className="container writing-container">
       <div className="page-heading">
-        <span className="eyebrow">FOLLOW THE WORK</span>
+        <span className="eyebrow">Follow updates</span>
         <h1>
           Keep up.
           <br />

@@ -2,22 +2,44 @@ import Image from "next/image";
 import Link from "next/link";
 import Timeline from "../../components/home/Timeline";
 import Toolkit from "../../components/home/Toolkit";
+import SectionHead from "../../components/SectionHead";
+import { facts } from "../../lib/content";
 import { metadata as pageMeta, jsonLd, siteUrl } from "../../lib/site";
 export const metadata = pageMeta(
   "About",
   "Meet Saksham Kanojia, a Delhi-based AI engineer building production GenAI, RAG, voice agents, and full-stack systems.",
   "/about",
 );
+const QA = [
+  {
+    q: "Who is Saksham Kanojia?",
+    a: "Saksham Kanojia is an AI engineer based in Delhi, India, working on production GenAI systems at Digital Web Solutions. His work spans retrieval-augmented generation, agentic workflows, voice AI, and full-stack applications.",
+    link: ["/about#experience", "See the experience"],
+  },
+  {
+    q: "What has he built?",
+    a: "His projects include Nexus, a real-time voice RAG assistant, and CollabDocs, a permission-aware collaborative document workspace. The case studies explain their architecture, decisions, and reported results.",
+    link: ["/projects", "Read the case studies"],
+  },
+  {
+    q: "Is he available for roles and freelance work?",
+    a: "Yes. Saksham is open to AI engineering roles and select freelance projects involving RAG assistants, voice systems, workflow automation, and AI product development.",
+    link: ["/work-with-me", "Share a role or project"],
+  },
+  {
+    q: "Where does he share engineering knowledge?",
+    a: "He publishes short posts with quick thoughts and updates, and longer technical articles on building AI systems. Both are public and can be followed by email or RSS.",
+    link: ["/posts", "Read the posts"],
+  },
+];
 export default function About() {
   return (
     <div className="container">
       <section className="about-heading page-heading" data-reveal>
         <div>
-          <span className="eyebrow">THE PERSON BEHIND THE SYSTEMS</span>
+          <span className="eyebrow">About</span>
           <h1>
-            Curious by default.
-            <br />
-            <em>Engineer by practice.</em>
+            Curious by default. <em>Engineer by practice.</em>
           </h1>
           <p>
             I’m Saksham, an AI engineer based in Delhi. I build production GenAI
@@ -29,99 +51,79 @@ export default function About() {
             workflow, choosing the architecture, shipping, and making it better
             once people use it.
           </p>
-          <a className="button secondary" href="/resume.docx" download>
-            Download my resume · DOCX
-          </a>
+          <div className="hero-actions">
+            <a className="button primary" href="/resume.docx" download>
+              Download resume ↓
+            </a>
+            <Link className="button ghost" href="/work-with-me">
+              Work with me
+            </Link>
+          </div>
         </div>
-        <Image
-          src="/portrait.webp"
-          alt="Saksham Kanojia"
-          width={400}
-          height={500}
-          className="about-portrait"
+        <figure className="card portrait">
+          <Image
+            src="/portrait.webp"
+            alt="Saksham Kanojia"
+            width={400}
+            height={500}
+            priority
+          />
+          <figcaption>
+            {facts.slice(1, 4).map(([k, v]) => (
+              <span key={k}>
+                <b>{k}</b> {v}
+              </span>
+            ))}
+          </figcaption>
+        </figure>
+      </section>
+      <section id="experience" className="section" aria-labelledby="exp-h">
+        <SectionHead
+          index="01"
+          label="Experience"
+          id="exp-h"
+          title="Where the work happens."
         />
+        <Timeline detailed />
       </section>
-      <section id="experience" className="section">
-        <span className="eyebrow">EXPERIENCE</span>
-        <h2>Where the work happens.</h2>
-        <div className="experience-list">
-          <Timeline />
-        </div>
+      <section id="toolkit" className="section" aria-labelledby="tool-h">
+        <SectionHead
+          index="02"
+          label="Toolkit"
+          id="tool-h"
+          title="Tools, with a purpose."
+        />
+        <Toolkit />
       </section>
-      <section id="toolkit" className="section">
-        <span className="eyebrow">THE TOOLKIT</span>
-        <h2>Tools, with a purpose.</h2>
-        <div className="experience-list">
-          <Toolkit />
-        </div>
-      </section>
-      <section className="education section">
-        <div>
-          <span className="eyebrow">EDUCATION</span>
-          <h3>B.Tech, Information Technology</h3>
-          <p>Maharaja Surajmal Institute of Technology, New Delhi</p>
-          <span className="mono">Nov 2020 — Jun 2024 · 8.7 CGPA</span>
-        </div>
-        <div>
-          <span className="eyebrow">CERTIFICATIONS</span>
-          <h3>OCI Generative AI Certified</h3>
-          <p>Oracle</p>
-          <h3>Docker Essentials</h3>
-          <p>Udemy</p>
-        </div>
-      </section>
-      <section
-        className="profile-answers section"
-        aria-labelledby="profile-answers"
-      >
-        <span className="eyebrow">QUICK ANSWERS</span>
-        <h2 id="profile-answers">Working with Saksham.</h2>
-        <dl>
-          <div>
-            <dt>Who is Saksham Kanojia?</dt>
-            <dd>
-              Saksham Kanojia is an AI engineer based in Delhi, India, working
-              on production GenAI systems at Digital Web Solutions. His work
-              spans retrieval-augmented generation, agentic workflows, voice AI,
-              and full-stack applications.
-            </dd>
-          </div>
-          <div>
-            <dt>What has he built?</dt>
-            <dd>
-              His projects include{" "}
-              <Link href="/projects/nexus">
-                Nexus, a real-time voice RAG assistant
-              </Link>
-              , and{" "}
-              <Link href="/projects/collabdocs">
-                CollabDocs, a permission-aware document workspace
-              </Link>
-              . The case studies explain their architecture, decisions, and
-              reported results.
-            </dd>
-          </div>
-          <div>
-            <dt>Is he available for roles and freelance work?</dt>
-            <dd>
-              Yes. Saksham is open to AI engineering roles and select freelance
-              projects involving RAG assistants, voice systems, workflow
-              automation, and AI product development.{" "}
-              <Link href="/work-with-me">Share a role or project</Link> to
-              discuss fit.
-            </dd>
-          </div>
-          <div>
-            <dt>Where does he share engineering knowledge?</dt>
-            <dd>
-              Read his <Link href="/posts">short posts</Link> for quick thoughts
-              and updates, or explore{" "}
-              <Link href="/writing">longer technical articles</Link>. Both are
-              public and can be followed through RSS.
-            </dd>
-          </div>
+      <section className="section" aria-labelledby="profile-answers">
+        <SectionHead
+          index="03"
+          label="Quick answers"
+          id="profile-answers"
+          title="Working with Saksham."
+        />
+        <dl className="qa">
+          {QA.map(({ q, a, link: [href, label] }) => (
+            <div key={q} data-reveal>
+              <dt>{q}</dt>
+              <dd>
+                {a} <Link href={href}>{label} →</Link>
+              </dd>
+            </div>
+          ))}
         </dl>
       </section>
+      <div className="card cta">
+        <div>
+          <h2>Let’s build something useful.</h2>
+          <p>Roles, freelance projects, or a problem worth a conversation.</p>
+        </div>
+        <div className="hero-actions">
+          <Link className="button primary" href="/work-with-me">
+            Get in touch
+          </Link>
+        </div>
+      </div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -136,12 +138,20 @@ export default function About() {
           }),
         }}
       />
-      <div className="inline-cta">
-        <h2>Let’s build something useful.</h2>
-        <Link className="button primary" href="/work-with-me">
-          Get in touch
-        </Link>
-      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: QA.map(({ q, a }) => ({
+              "@type": "Question",
+              name: q,
+              acceptedAnswer: { "@type": "Answer", text: a },
+            })),
+          }),
+        }}
+      />
     </div>
   );
 }

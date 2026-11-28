@@ -15,16 +15,15 @@ export default async function Writing() {
   return (
     <div className="container writing-container">
       <div className="page-heading">
-        <span className="eyebrow">THE ENGINEERING NOTEBOOK</span>
+        <span className="eyebrow">Notebook · articles</span>
         <h1>
           Learn. Build.
           <br />
           <em>Write it down.</em>
         </h1>
         <p>
-          Notes on the decisions, bugs, and small discoveries
-          <br />
-          behind building AI systems in the real world.
+          Notes on the decisions, bugs, and small discoveries behind building
+          AI systems in the real world.
         </p>
       </div>
       <PublicationNav current="writing" />

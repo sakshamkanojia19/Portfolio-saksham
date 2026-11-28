@@ -33,7 +33,7 @@ export default async function Admin() {
   return (
     <div className="container admin-shell">
       <div className="page-heading">
-        <span className="eyebrow">PRIVATE · PUBLISHING DESK</span>
+        <span className="eyebrow">Private · publishing desk</span>
         <h1>
           Make a note.
           <br />

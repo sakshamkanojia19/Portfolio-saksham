@@ -1,71 +1,42 @@
 import Link from "next/link";
-import ProjectArt from "./ProjectArt";
+import ProjectPreview from "./ProjectPreview";
 
-// Featured case-study row: artwork on one side, story + proof on the other.
-export default function ProjectCard({ project: p, index = 0 }) {
+// Consistent project previews; the full evidence lives on the case-study page.
+export default function ProjectCard({ project: p }) {
   const href = `/projects/${p.slug}`;
   return (
-    <article
-      className={`work-row spotlight tone-${p.color}`}
-      data-reveal
-    >
-      <Link
-        className="work-art"
-        href={href}
-        aria-label={`Read the ${p.name} case study`}
-        tabIndex={-1}
-      >
-        <ProjectArt kind={p.slug} compact />
-        <span className="work-number" aria-hidden="true">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-      </Link>
-      <div className="work-body">
-        <span className="work-category">{p.category}</span>
-        <h3>
-          <Link href={href}>{p.name}</Link>
-        </h3>
-        <p className="work-tagline">{p.title}</p>
-        <p className="work-summary">{p.summary}</p>
-        <dl className="work-metrics">
-          {p.metrics.map(([value, label]) => (
-            <div key={label}>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
-        {p.caveat && <p className="work-caveat">{p.caveat}</p>}
-        <div className="chip-row">
-          {p.stack.slice(0, 6).map((s) => (
-            <span key={s}>{s}</span>
-          ))}
-        </div>
-        <div className="work-links">
-          <Link className="button primary small" href={href}>
-            Read the case study <span className="btn-arrow">→</span>
-          </Link>
-          {p.repository && (
-            <a
-              className="text-link"
-              href={p.repository}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Source ↗
-            </a>
-          )}
-          {p.link && (
-            <a
-              className="text-link"
-              href={p.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Live ↗
-            </a>
-          )}
-        </div>
+    <article className="project" data-reveal>
+      <ProjectPreview project={p} />
+      <div className="project-body">
+      <div className="project-top">
+        <span className="kicker">{p.category}</span>
+      </div>
+      <h3>
+        <Link href={href}>{p.name}</Link>
+      </h3>
+      <p className="project-tagline">{p.title}</p>
+      <ul className="project-results" aria-label="Selected results">
+        {p.metrics.slice(0, 1).map(([value, label]) => (
+          <li key={label}>
+            <b>{value}</b> {label}
+          </li>
+        ))}
+      </ul>
+      <div className="project-links">
+        <Link className="text-link" href={href}>
+          Read case study
+        </Link>
+        {p.repository && (
+          <a href={p.repository} target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        )}
+        {p.link && (
+          <a href={p.link} target="_blank" rel="noopener noreferrer">
+            Live demo
+          </a>
+        )}
+      </div>
       </div>
     </article>
   );

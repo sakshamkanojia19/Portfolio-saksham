@@ -1,9 +1,21 @@
 import "./globals.css";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import Backdrop from "../components/Backdrop";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Interactions from "../components/motion/Interactions";
 import { siteUrl, jsonLd } from "../lib/site";
-import { profile } from "../lib/content";
+import { profile, summary } from "../lib/content";
+
+// Self-hosted at build time: visitors' browsers never contact Google Fonts.
+const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "500"],
+});
+
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -11,7 +23,9 @@ export const metadata = {
     template: "%s | Saksham Kanojia",
   },
   description:
-    "AI engineer building production RAG, agentic workflows, and real-time voice systems. Explore Nexus, CollabDocs, and opportunities to work together.",
+    "AI engineer building production RAG, agentic workflows, and real-time voice systems. Case studies with architecture and benchmarks, plus short posts and articles.",
+  authors: [{ name: profile.name, url: siteUrl }],
+  creator: profile.name,
   alternates: { canonical: "/", types: { "application/rss+xml": "/feed.xml" } },
   openGraph: {
     type: "website",
@@ -26,11 +40,18 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0a0b09",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+  ],
 };
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -42,6 +63,7 @@ export default function RootLayout({ children }) {
         <a className="skip-link" href="#main">
           Skip to content
         </a>
+        <Backdrop />
         <Interactions />
         <Header />
         <main id="main">{children}</main>
@@ -56,7 +78,7 @@ export default function RootLayout({ children }) {
               url: siteUrl,
               name: "Saksham Kanojia",
               description:
-                "AI engineering projects, short posts, and technical articles by Saksham Kanojia.",
+                "AI engineering case studies, short posts, and technical articles by Saksham Kanojia.",
               publisher: { "@id": `${siteUrl}/#person` },
               inLanguage: "en",
             }),
@@ -71,9 +93,14 @@ export default function RootLayout({ children }) {
               "@id": `${siteUrl}/#person`,
               name: profile.name,
               url: siteUrl,
+              description: summary,
               jobTitle: "AI Engineer",
               image: `${siteUrl}/portrait.webp`,
               sameAs: [profile.github, profile.linkedin],
+              homeLocation: {
+                "@type": "Place",
+                name: "Delhi, India",
+              },
               worksFor: {
                 "@type": "Organization",
                 name: "Digital Web Solutions",
@@ -82,10 +109,17 @@ export default function RootLayout({ children }) {
                 "@type": "CollegeOrUniversity",
                 name: "Maharaja Surajmal Institute of Technology",
               },
+              hasCredential: {
+                "@type": "EducationalOccupationalCredential",
+                name: "OCI Generative AI Certified",
+                recognizedBy: { "@type": "Organization", name: "Oracle" },
+              },
               knowsAbout: [
                 "Retrieval-Augmented Generation",
                 "Voice AI",
                 "AI Agents",
+                "Large Language Models",
+                "FastAPI",
                 "Full-stack development",
               ],
             }),

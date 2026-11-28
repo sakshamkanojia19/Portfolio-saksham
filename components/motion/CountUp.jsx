@@ -1,50 +1,42 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { animate, useInView } from "motion/react";
+import useMotionPreference from "./useMotionPreference";
 
-// Renders the final value on the server; counts up once when scrolled into view.
-export default function CountUp({ value }) {
+// The final value is server rendered and remains the accessible text throughout.
+export default function CountUp({ value, delay = 0 }) {
   const ref = useRef(null);
-  const [display, setDisplay] = useState(value);
+  const entered = useInView(ref, { once: true, amount: 0.6 });
+  const reduce = useMotionPreference();
+  const match = String(value).match(/^([^0-9]*)(\d+(?:\.\d+)?)(.*)$/);
+  const target = match ? Number(match[2]) : null;
+  const decimals = match?.[2].split(".")[1]?.length || 0;
+  const [current, setCurrent] = useState(target);
+  const [running, setRunning] = useState(false);
+  const completed = useRef(false);
 
   useEffect(() => {
-    const match = value.match(/^([^\d]*)(\d+)(.*)$/);
-    const el = ref.current;
-    if (
-      !match ||
-      !el ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !("IntersectionObserver" in window)
-    )
+    if (target === null || !entered) return;
+    if (reduce || completed.current) {
+      setCurrent(target);
+      setRunning(false);
       return;
-    const [, prefix, digits, suffix] = match;
-    const target = Number(digits);
-    let raf = 0;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        io.disconnect();
-        const start = performance.now();
-        const tick = (now) => {
-          const p = Math.min(1, (now - start) / 1500);
-          const eased = 1 - Math.pow(1 - p, 3);
-          setDisplay(`${prefix}${Math.round(target * eased)}${suffix}`);
-          if (p < 1) raf = requestAnimationFrame(tick);
-        };
-        raf = requestAnimationFrame(tick);
-      },
-      { threshold: 0.5 },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, [value]);
+    }
+    setCurrent(0);
+    setRunning(true);
+    const controls = animate(0, target, {
+      duration: 1.6, delay, ease: [0.22, 1, 0.36, 1],
+      onUpdate: setCurrent,
+      onComplete: () => { completed.current = true; setRunning(false); setCurrent(target); },
+    });
+    return () => controls.stop();
+  }, [entered, reduce, target, delay]);
 
+  const shown = match ? `${match[1]}${Number(current ?? target).toFixed(decimals)}${match[3]}` : value;
   return (
-    <span ref={ref}>
-      <span aria-hidden="true">{display}</span>
+    <span ref={ref} className="count-up" data-count-running={running}>
       <span className="sr-only">{value}</span>
+      <span aria-hidden="true">{shown}</span>
     </span>
   );
 }

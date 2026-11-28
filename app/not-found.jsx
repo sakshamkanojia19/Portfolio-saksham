@@ -2,7 +2,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="container empty-state error-page">
-      <span className="eyebrow">404 · PAGE NOT FOUND</span>
+      <span className="eyebrow">404 · not found</span>
       <h1>
         A path less travelled.
         <br />A little too far.

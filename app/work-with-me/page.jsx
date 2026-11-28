@@ -11,27 +11,25 @@ export default function Work() {
   return (
     <div className="container">
       <div className="page-heading" data-reveal>
-        <span className="eyebrow">OPEN TO THE RIGHT PROBLEMS</span>
+        <span className="eyebrow">Work with me</span>
         <h1>
           Your next idea.
           <br />
           <em>Let’s make it work.</em>
         </h1>
         <p>
-          For founders building AI products, teams improving workflows,
-          <br />
-          and companies looking for an engineer who owns the outcome.
+          For founders building AI products, teams improving workflows, and
+          companies looking for an engineer who owns the outcome.
         </p>
       </div>
       <div className="service-grid">
         {services.map((s, i) => (
           <article
             key={s.title}
-            className="spotlight"
             data-reveal
             style={{ "--d": i % 2 }}
           >
-            <span className="service-icon">✧</span>
+            <span className="service-icon">{String(i + 1).padStart(2, "0")}</span>
             <h2>{s.title}</h2>
             <p>{s.text}</p>
             <span className="service-tags">{s.tags}</span>
@@ -43,7 +41,7 @@ export default function Work() {
       </div>
       <section className="contact-layout section">
         <div>
-          <span className="eyebrow">START A CONVERSATION</span>
+          <span className="eyebrow">Start a conversation</span>
           <h2>
             Small team?
             <br />
@@ -62,7 +60,12 @@ export default function Work() {
             <a href="/resume.docx" download className="text-link">
               Download resume
             </a>
-            <a href={profile.linkedin} className="text-link">
+            <a
+              href={profile.linkedin}
+              className="text-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Connect on LinkedIn
             </a>
           </div>

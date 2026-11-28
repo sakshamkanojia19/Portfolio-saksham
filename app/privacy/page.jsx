@@ -9,17 +9,17 @@ export default function Privacy() {
   return (
     <div className="container privacy">
       <div className="page-heading">
-        <span className="eyebrow">A SMALL SITE, A CLEAR POLICY</span>
+        <span className="eyebrow">Privacy</span>
         <h1>Privacy.</h1>
-        <p>Last updated 25 November 2026</p>
+        <p>Last updated 27 November 2026</p>
       </div>
       <div className="prose">
         <h2>Reading the site</h2>
         <p>
           You do not need an account to read public pages. This site does not
           include advertising trackers or third-party analytics. The hosting
-          provider may process routine request logs. Fonts load from Google
-          Fonts, which receives the request and your IP address.
+          provider may process routine request logs. Fonts are served from this
+          site itself, so no font requests go to third parties.
         </p>
         <h2>Likes</h2>
         <p>

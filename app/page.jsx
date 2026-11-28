@@ -1,344 +1,209 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { profile, projects } from "../lib/content";
 import { getPosts } from "../lib/posts";
 import { dateLabel, readingTime } from "../lib/site";
-import { postPath } from "../lib/publication.mjs";
-import ProjectCard from "../components/ProjectCard";
-import NeuralField from "../components/motion/NeuralField";
-import RoleTicker from "../components/motion/RoleTicker";
-import AgentTrace from "../components/motion/AgentTrace";
-import CountUp from "../components/motion/CountUp";
-import Capabilities from "../components/home/Capabilities";
-import StackMarquee from "../components/home/StackMarquee";
+import { postPath, plainSummary } from "../lib/publication.mjs";
+import HeroField from "../components/home/HeroField";
+import RotatingText from "../components/home/RotatingText";
 import Timeline from "../components/home/Timeline";
-import Toolkit from "../components/home/Toolkit";
+import ProjectCard from "../components/ProjectCard";
+import SectionHead from "../components/SectionHead";
+import CountUp from "../components/motion/CountUp";
+import { HeroMotion, HeroLayer } from "../components/motion/HeroMotion";
 
 export const dynamic = "force-dynamic";
 
+const BUILDING = [
+  "enterprise voice agents",
+  "permission-aware RAG",
+  "agentic workflows",
+  "internal SaaS platforms",
+];
 const STATS = [
-  ["5+", "internal SaaS platforms shipped to production"],
+  ["~1s", "time to first token in Nexus voice"],
   ["250+", "clients covered by daily LLM audits"],
-  ["~60%", "estimated reduction in manual ops*"],
-  ["~1s", "time to first token in the Nexus voice loop"],
+  ["5+", "internal SaaS platforms shipped"],
 ];
 
-const PROCESS = [
-  [
-    "Understand the workflow",
-    "Who uses it, what breaks today, and what “working” means — before any model is chosen.",
-  ],
-  [
-    "Design the boundaries",
-    "Permissions, latency, cost, and failure modes are architecture decisions, not afterthoughts.",
-  ],
-  [
-    "Ship end to end",
-    "Backend, retrieval, interface, and deployment — one owner across the whole path.",
-  ],
-  [
-    "Measure and harden",
-    "Regression tests, observability, and the awkward edge cases that only show up with real users.",
-  ],
-];
-
-function SectionHead({ index, eyebrow, title, children, action }) {
-  return (
-    <div className="sec-head" data-reveal>
-      <div>
-        <span className="eyebrow">
-          <span className="eyebrow-index">{index}</span> {eyebrow}
-        </span>
-        <h2>{title}</h2>
-      </div>
-      {(children || action) && (
-        <div className="sec-head-side">
-          {children && <p>{children}</p>}
-          {action}
-        </div>
-      )}
-    </div>
-  );
+function excerptOf(post) {
+  const text = post.kind === "note" ? plainSummary(post.body) : post.excerpt;
+  return text.length > 200 ? `${text.slice(0, 200).trimEnd()}…` : text;
 }
 
 export default async function Home() {
   const { posts } = await getPosts();
+  const latest = posts.slice(0, 3);
+
   return (
     <div className="home">
-      <section className="hero2">
-        <NeuralField />
-        <div className="hero-grid-bg" aria-hidden="true" />
-        <div className="container hero2-grid">
-          <div className="hero2-copy">
-            <div className="availability" data-reveal>
-              <span className="pulse" /> Open to AI engineering roles &amp;
-              select projects
-            </div>
-            <p className="hero-kicker" data-reveal style={{ "--d": 1 }}>
-              Hi, I’m Saksham — AI engineer in Delhi.
-            </p>
-            <h1 data-reveal style={{ "--d": 2 }}>
-              I build AI that <span className="h-accent">works in the</span>{" "}
-              <br className="h1-break" />
-              <span className="h-accent serif">real world.</span>
-            </h1>
-            <p className="hero-ticker" data-reveal style={{ "--d": 3 }}>
-              <span className="ticker-label">Shipping</span>
-              <RoleTicker />
-            </p>
-            <p className="hero-lede" data-reveal style={{ "--d": 4 }}>
-              From permission-aware RAG to real-time voice agents, I take AI
-              systems from the first architecture sketch to production — and
-              share what I learn along the way.
-            </p>
-            <div className="hero-actions" data-reveal style={{ "--d": 5 }}>
-              <Link className="button primary" href="/projects">
-                Explore my work <span className="btn-arrow">→</span>
-              </Link>
-              <Link className="button secondary" href="/work-with-me">
-                Let’s work together
-              </Link>
-            </div>
-            <ul className="hero-links" data-reveal style={{ "--d": 6 }}>
-              <li>
-                <a href={profile.github} target="_blank" rel="noopener noreferrer">
-                  GitHub ↗
-                </a>
-              </li>
-              <li>
-                <a
-                  href={profile.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  LinkedIn ↗
-                </a>
-              </li>
-              <li>
-                <a href="/resume.docx" download>
-                  Resume ↓
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="hero2-visual" data-reveal style={{ "--d": 3 }}>
-            <div className="portrait-card">
-              <div className="portrait-inner">
-                <Image
-                  src="/portrait.webp"
-                  alt="Saksham Kanojia"
-                  width={640}
-                  height={800}
-                  priority
-                  className="portrait2"
-                />
-                <div className="portrait-shade" />
+      <HeroMotion>
+        <HeroLayer layer="background" className="hero-depth-field"><HeroField /></HeroLayer>
+        <div className="container hero-inner">
+          <div className="hero-grid">
+            <div className="hero-copy" data-hero-enter>
+              <p className="status">
+                <span className="status-dot" aria-hidden="true" /> open to
+                roles &amp; projects
+              </p>
+              <h1 id="hero-heading">
+                Saksham <span className="grad-text">Kanojia</span>
+              </h1>
+              <p className="hero-role">
+                AI Engineer · RAG · Voice agents · Agentic workflows
+              </p>
+              <p className="hero-lede">
+                I build AI-native products and automation systems with LLMs,
+                RAG pipelines, and scalable SaaS — engineered end to end and
+                measured in production.
+              </p>
+              <p className="hero-building">
+                <span aria-hidden="true">&gt; </span>currently building{" "}
+                <RotatingText items={BUILDING} />
+              </p>
+              <div className="hero-actions">
+                <Link className="button primary" href="#systems">
+                  View my work
+                </Link>
+                <Link className="button" href="/work-with-me">
+                  Get in touch
+                </Link>
               </div>
+              <p className="hero-social">
+                <a href={profile.github} target="_blank" rel="noopener noreferrer">
+                  GitHub
+                </a>
+                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
+                  LinkedIn
+                </a>
+                <a href="/resume.docx" download>Resume</a>
+                <span>{profile.location}</span>
+              </p>
             </div>
-            <span className="orbit-chip c1" aria-hidden="true">
-              ✧ RAG
-            </span>
-            <span className="orbit-chip c2" aria-hidden="true">
-              ◉ Voice AI
-            </span>
-            <span className="orbit-chip c3" aria-hidden="true">
-              ⌘ Agents
-            </span>
-            <AgentTrace />
+            <HeroLayer layer="portrait" className="hero-portrait">
+              <span className="portrait-glow" aria-hidden="true" />
+              <Image
+                src="/portrait.webp"
+                alt="Portrait of Saksham Kanojia"
+                width={340}
+                height={340}
+                priority
+              />
+            </HeroLayer>
           </div>
+          <dl className="stats" data-reveal>
+            {STATS.map(([value, label], index) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd className="grad-text"><CountUp value={value} delay={index * 0.12} /></dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <a className="scroll-cue" href="#proof" aria-label="Scroll to highlights">
-          <span />
-        </a>
-      </section>
+      </HeroMotion>
 
-      <section id="proof" className="container stats" aria-label="Highlights">
-        {STATS.map(([value, label], i) => (
-          <div className="stat" key={label} data-reveal style={{ "--d": i }}>
-            <strong>
-              <CountUp value={value} />
-            </strong>
-            <span>{label}</span>
-          </div>
-        ))}
-        <p className="stats-note">
-          *Directional estimate, validated with leadership.
-        </p>
-      </section>
-
-      <StackMarquee />
-
-      <section className="container section" aria-labelledby="build-heading">
+      <section id="systems" className="section container" aria-labelledby="systems-heading">
         <SectionHead
           index="01"
-          eyebrow="WHAT I BUILD"
-          title={
-            <span id="build-heading">
-              Systems that survive <em className="serif">real users.</em>
-            </span>
-          }
-        >
-          Five areas I work across every week — from the first voice packet to
-          the last deploy.
-        </SectionHead>
-        <Capabilities />
-      </section>
-
-      <section
-        id="work"
-        className="container section"
-        aria-labelledby="work-heading"
-      >
-        <SectionHead
-          index="02"
-          eyebrow="SELECTED WORK"
-          title={
-            <span id="work-heading">
-              Built to solve. <em className="serif">Engineered to last.</em>
-            </span>
-          }
-          action={
+          label="Projects"
+          id="systems-heading"
+          title="Selected work."
+          note="Voice, retrieval, and automation. A few problems I've taken from idea to working software."
+          aside={
             <Link className="text-link" href="/projects">
-              All case studies →
+              All case studies
             </Link>
           }
         />
-        <div className="work-list">
-          {projects.map((p, i) => (
-            <ProjectCard project={p} index={i} key={p.slug} />
+        <div className="project-grid">
+          {projects.map((p) => (
+            <ProjectCard
+              key={p.slug}
+              project={p}
+            />
           ))}
         </div>
       </section>
 
-      <section
-        className="container section split-section"
-        aria-labelledby="exp-heading"
-      >
-        <div className="split-intro">
-          <SectionHead
-            index="03"
-            eyebrow="EXPERIENCE"
-            title={
-              <span id="exp-heading">
-                An engineer who owns <em className="serif">the whole problem.</em>
-              </span>
-            }
-          />
-          <p data-reveal>
-            At Digital Web Solutions I build AI and internal platforms across
-            operations, client intelligence, and voice — architecture, backend,
-            interfaces, and deployment.
-          </p>
-          <Link className="text-link" href="/about#experience" data-reveal>
-            Full experience →
-          </Link>
-        </div>
-        <Timeline limit={3} />
-      </section>
-
-      <section
-        id="toolkit"
-        className="container section"
-        aria-labelledby="toolkit-heading"
-      >
+      <section className="section container" aria-labelledby="exp-heading">
         <SectionHead
-          index="04"
-          eyebrow="THE TOOLKIT"
-          title={
-            <span id="toolkit-heading">
-              Tools, <em className="serif">with a purpose.</em>
-            </span>
-          }
-        >
-          The stack I reach for in production, grouped by the problems it
-          solves.
-        </SectionHead>
-        <Toolkit />
-      </section>
-
-      <section className="container section" aria-labelledby="process-heading">
-        <SectionHead
-          index="05"
-          eyebrow="HOW I WORK"
-          title={
-            <span id="process-heading">
-              What happens <em className="serif">after the demo.</em>
-            </span>
+          index="03"
+          label="Experience"
+          id="exp-heading"
+          title="Where I've been building."
+          aside={
+            <Link className="text-link" href="/about#experience">
+              More about me
+            </Link>
           }
         />
-        <ol className="process">
-          {PROCESS.map(([title, text], i) => (
-            <li key={title} data-reveal style={{ "--d": i }}>
-              <span className="process-num">0{i + 1}</span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </li>
-          ))}
-        </ol>
+        <Timeline />
       </section>
 
-      {posts.length > 0 && (
-        <section
-          className="container section latest-posts"
-          aria-labelledby="latest-heading"
-        >
-          <SectionHead
-            index="06"
-            eyebrow="LATEST POSTS"
-            title={
-              <span id="latest-heading">
-                Notes <em className="serif">from the build.</em>
-              </span>
-            }
-            action={
-              <Link className="text-link" href="/posts">
-                All posts →
-              </Link>
-            }
-          />
-          <ol className="post-grid">
-            {posts.slice(0, 3).map((p, i) => (
-              <li key={p.id} data-reveal style={{ "--d": i }}>
-                <Link className="post-tile spotlight" href={postPath(p)}>
-                  <span className="post-tile-meta">
+      <section className="section writing-band" aria-labelledby="notebook-heading">
+        <div className="container">
+        <SectionHead
+          index="02"
+          label="Notebook"
+          id="notebook-heading"
+          title="Notes from the work."
+          aside={
+            <Link className="text-link" href="/posts">
+              All posts
+            </Link>
+          }
+        />
+        <div className="notebook">
+          <ol className="feed">
+            {latest.map((p) => (
+              <li key={p.id} data-reveal>
+                <Link className="card feed-item" href={postPath(p)}>
+                  <span className="feed-meta">
+                    <span className="pill">
+                      {p.kind === "note" ? "Post" : "Article"}
+                    </span>
                     <time dateTime={p.published_at}>
                       {dateLabel(p.published_at)}
                     </time>
-                    · {readingTime(p.body)} min ·{" "}
-                    {p.kind === "note" ? "Short post" : "Article"}
+                    {p.kind !== "note" && <span>{readingTime(p.body)} min read</span>}
                   </span>
-                  <h3>{p.title}</h3>
-                  {p.excerpt && <p>{p.excerpt}</p>}
-                  <span className="post-tile-go" aria-hidden="true">
-                    Read →
-                  </span>
+                  {p.kind !== "note" && <strong>{p.title}</strong>}
+                  <span className="feed-text">{excerptOf(p)}</span>
                 </Link>
               </li>
             ))}
+            {!latest.length && (
+              <li className="card feed-empty">
+                First posts are on the way — subscribe to get them by email.
+              </li>
+            )}
           </ol>
-        </section>
-      )}
+          <aside className="card notebook-aside" data-reveal>
+            <h3>Stay curious.</h3>
+            <p>Experiments, lessons, and things I learn while building. Follow by email or RSS.</p>
+            <Link className="text-link" href="/subscribe">Follow updates</Link>
+          </aside>
+        </div>
+        </div>
+      </section>
 
-      <section className="container cta2-wrap">
-        <div className="cta2" data-reveal>
-          <div className="cta2-inner">
-            <span className="eyebrow">GOOD WORK STARTS WITH A CONVERSATION</span>
-            <h2>
-              Building something <em className="serif">that should exist?</em>
-            </h2>
-            <p>
-              I’m open to AI engineering roles and focused freelance projects —
-              RAG assistants, voice systems, agents, and AI products.
-            </p>
-            <div className="hero-actions cta2-actions">
-              <Link className="button primary" href="/work-with-me">
-                Tell me what you’re building <span className="btn-arrow">→</span>
-              </Link>
-              <a className="button secondary" href={`mailto:${profile.email}`}>
-                {profile.email}
-              </a>
-            </div>
+      <section className="section container" aria-labelledby="cta-heading">
+        <div className="card cta" data-reveal>
+          <p className="eyebrow">let’s build</p>
+          <h2 id="cta-heading">
+            Have an AI problem <span className="grad-text">worth solving?</span>
+          </h2>
+          <p>
+            Open to AI engineering roles and focused freelance projects — RAG
+            assistants, voice agents, automation, and AI products.
+          </p>
+          <div className="hero-actions">
+            <Link className="button primary" href="/work-with-me">
+              Let&apos;s talk
+            </Link>
+            <a className="button" href={`mailto:${profile.email}`}>
+              {profile.email}
+            </a>
           </div>
         </div>
       </section>

@@ -10,7 +10,7 @@ export default async function Login({ searchParams }) {
   const params = await searchParams;
   return (
     <div className="auth-shell">
-      <span className="eyebrow">SIGN IN</span>
+      <span className="eyebrow">Sign in</span>
       <h1>
         Welcome
         <br />

@@ -1,53 +1,64 @@
-import { experience } from "../../lib/content";
+import { experience, education } from "../../lib/content";
 
 const STACKS = {
-  "Digital Web Solutions": [
-    "Pipecat",
-    "Plivo",
-    "LangChain",
-    "Pinecone",
-    "n8n",
-    "MCP",
-    "AWS",
-    "GCP",
-  ],
-  "Unified Mentor": ["React", "FastAPI", "Node.js", "MongoDB", "Docker"],
+  "Digital Web Solutions":
+    "Pipecat · Plivo · LangChain · Pinecone · n8n · MCP · AWS · GCP",
+  "Unified Mentor": "React · FastAPI · Node.js · MongoDB · Docker",
 };
 
-// Vertical career timeline. `limit` trims the bullet list on the home page.
-export default function Timeline({ limit }) {
+// Keep the homepage focused on roles; education and full details live on About.
+export default function Timeline({ detailed = false }) {
   return (
-    <ol className="timeline">
-      {experience.map((e, i) => (
-        <li
-          className="tl-item"
-          key={e.company}
-          data-reveal
-          style={{ "--d": i }}
-        >
-          <span className={`tl-dot${i === 0 ? " now" : ""}`} aria-hidden="true" />
-          <div className="tl-meta">
-            <span className="mono">{e.period}</span>
-            {i === 0 && <span className="tl-badge">Current</span>}
-          </div>
-          <div className="tl-card spotlight">
-            <h3>{e.role}</h3>
-            <p className="tl-company">{e.company}</p>
-            <ul>
-              {(limit ? e.points.slice(0, limit) : e.points).map((p) => (
-                <li key={p}>{p}</li>
-              ))}
-            </ul>
-            {STACKS[e.company] && (
-              <div className="chip-row">
-                {STACKS[e.company].map((t) => (
-                  <span key={t}>{t}</span>
-                ))}
+    <div className="ledger">
+      <div className="ledger-group">
+        <p className="ledger-kind">Roles</p>
+        <ol>
+          {experience.map((e, i) => (
+            <li className="ledger-row" key={e.company} data-reveal>
+              <span className="ledger-date">
+                {e.period}
+                {i === 0 && <span className="pill">now</span>}
+              </span>
+              <div className="ledger-what">
+                <h3>{e.role}</h3>
+                <p>{e.company}</p>
               </div>
-            )}
-          </div>
-        </li>
-      ))}
-    </ol>
+              <div className="ledger-impact">
+                <ul>
+                  {(detailed ? e.points : e.impact).map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
+                {detailed && STACKS[e.company] && (
+                  <span className="mono-tags">{STACKS[e.company]}</span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      {detailed && <div className="ledger-group">
+        <p className="ledger-kind">Education</p>
+        <ol>
+          <li className="ledger-row" data-reveal>
+            <span className="ledger-date">{education.period}</span>
+            <div className="ledger-what">
+              <h3>{education.degree}</h3>
+              <p>{education.school}</p>
+            </div>
+            <div className="ledger-impact">
+              <ul>
+                <li>{education.grade}</li>
+                {education.certifications.map(([name, by]) => (
+                  <li key={name}>
+                    {name} — {by}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        </ol>
+      </div>}
+    </div>
   );
 }

@@ -3,6 +3,8 @@ test("public routes render, navigation works, and metadata exists without client
   page,
   request,
 }) => {
+  // This check visits 14 routes and captures a full case study on a cold server.
+  test.setTimeout(60000);
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   for (const path of [
@@ -25,9 +27,15 @@ test("public routes render, navigation works, and metadata exists without client
     expect(response.status()).toBe(200);
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator("main")).toBeVisible();
+    if (path === "/projects/nexus") {
+      await page.screenshot({ path: "test-results/case-study.png", fullPage: true });
+    }
   }
   const html = await (await request.get("/projects/nexus")).text();
   expect(html).toContain("Endpointing that considers the sentence");
+  expect(html).toContain("My contribution");
+  expect(html).toContain("Key decision");
+  expect(html).toContain("How it fits together");
   const canonical = html.match(/rel="canonical" href="([^"]+)"/);
   expect(canonical).not.toBeNull();
   expect(new URL(canonical[1]).pathname).toBe("/projects/nexus");
@@ -35,17 +43,54 @@ test("public routes render, navigation works, and metadata exists without client
   expect(errors).toEqual([]);
 });
 test("desktop and mobile layout, theme, and menu", async ({ page }) => {
+  test.setTimeout(60000);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
+  await expect(page.locator(".hero").getByRole("link", { name: "Get in touch" })).toHaveAttribute("href", "/work-with-me");
+  const sections = await page.locator(".home > section").evaluateAll(nodes => nodes.map(node => node.getAttribute("aria-labelledby")));
+  expect(sections).toEqual(["hero-heading", "systems-heading", "exp-heading", "notebook-heading", "cta-heading"]);
+  const darkBand = await page.locator(".writing-band").evaluate(node => getComputedStyle(node).backgroundColor);
+  expect(darkBand).toBe("rgb(238, 240, 242)");
+  await page.locator("#systems").scrollIntoViewIfNeeded();
+  await expect(page.locator(".project").first()).toBeVisible();
+  const cards = await page.locator(".project").evaluateAll(nodes => nodes.map(node => {
+    const rect = node.getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
+  }));
+  expect(cards).toHaveLength(4);
+  await expect(page.locator(".project-preview")).toHaveCount(4);
+  await expect.poll(() => page.locator(".project-preview img").evaluateAll(images =>
+    images.length === 2 && images.every(img => img.complete && img.naturalWidth > 0)
+  )).toBe(true);
+  expect(Math.abs(cards[0].width - cards[1].width)).toBeLessThan(1);
+  expect(Math.abs(cards[0].height - cards[1].height)).toBeLessThan(1);
+  // Reveal every section before capturing a full-page visual review.
+  await page.locator(".home > .section").evaluateAll(async nodes => {
+    for (const node of nodes) {
+      node.scrollIntoView({ behavior: "instant", block: "center" });
+      await new Promise(resolve => setTimeout(resolve, 180));
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
+  await page.waitForTimeout(800);
   await page.screenshot({
     path: "test-results/home-desktop.png",
     fullPage: true,
   });
   await page.getByRole("button", { name: "Switch to light theme" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect.poll(() => page.locator(".writing-band").evaluate(node => getComputedStyle(node).backgroundColor)).toBe("rgb(24, 26, 29)");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.locator("[data-reveal]").evaluateAll(async nodes => {
+    for (const node of nodes) {
+      node.scrollIntoView({ behavior: "instant", block: "center" });
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
+  await page.waitForTimeout(800);
   await page.screenshot({
     path: "test-results/home-light.png",
     fullPage: true,
@@ -73,6 +118,14 @@ test("desktop and mobile layout, theme, and menu", async ({ page }) => {
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
+  await page.locator("[data-reveal]").evaluateAll(async nodes => {
+    for (const node of nodes) {
+      node.scrollIntoView({ behavior: "instant", block: "center" });
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
+  await page.waitForTimeout(800);
   await page.screenshot({
     path: "test-results/home-mobile.png",
     fullPage: true,

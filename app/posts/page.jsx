@@ -26,7 +26,7 @@ export default async function Posts({ searchParams }) {
   return (
     <div className="container posts-container">
       <div className="page-heading">
-        <span className="eyebrow">SAKSHAM’S PUBLIC NOTEBOOK</span>
+        <span className="eyebrow">Notebook · short posts</span>
         <h1>
           Thinking out loud.
           <br />
